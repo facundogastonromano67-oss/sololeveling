@@ -1,0 +1,28 @@
+VIDA RPG V5 - SUBIDA A GITHUB
+
+Subí/reemplazá TODOS los archivos de este ZIP en la raíz del repositorio.
+
+Archivos principales:
+- index.html
+- tareas.html
+- habilidades.html
+- academia.html
+- dietario.html
+- perfil.html
+- historial.html
+- assessment.html
+- styles.css
+- app.js
+- sw.js
+- manifest.json
+- icon-192.svg
+- icon-512.svg
+
+IMPORTANTE:
+Esta versión ya no vive en una sola página. Los nuevos HTML deben quedar todos en la raíz, junto a index.html.
+
+Monetización:
+El límite de 2 lecciones nuevas por día ya funciona. Los botones de video recompensado y Premium son una interfaz preparada para futuro, pero NO cobran ni muestran publicidad real todavía. Para activarlos habrá que integrar proveedores de anuncios/pagos y, idealmente, cuentas/backend.
+
+Dietario:
+Es una estimación educativa/general para adultos. No genera plan automático si se marca una condición médica relevante, embarazo/lactancia, antecedente de TCA o alergia grave.
