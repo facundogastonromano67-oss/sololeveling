@@ -9,35 +9,114 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="onboardingOverlay" class="onboarding-overlay hidden">
+    <section class="onboarding-card">
+      <div class="eyebrow">CREACIÓN DE PERSONAJE</div>
+      <h1>Tu punto de partida</h1>
+      <p class="muted">Respondé según cómo estás hoy. Sirve para crear una base que después se modifica con acciones y métricas reales.</p>
+
+      <form id="onboardingForm">
+        <div class="onboarding-section">
+          <h2>Datos básicos</h2>
+          <div class="form-grid">
+            <label>Nombre<input id="obName" required placeholder="Tu nombre" /></label>
+            <label>Edad<input id="obAge" type="number" min="13" max="100" placeholder="24" /></label>
+            <label>Altura (cm)<input id="obHeight" type="number" min="120" max="230" placeholder="175" /></label>
+            <label>Peso (kg)<input id="obWeight" type="number" min="30" max="250" step="0.1" placeholder="72.5" /></label>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <h2>🧠 Intelecto</h2>
+          <div class="rating-grid">
+            <label>Aprender cosas nuevas <span id="vLearning">5</span>/10<input id="obLearning" type="range" min="1" max="10" value="5" /></label>
+            <label>Resolver problemas <span id="vProblem">5</span>/10<input id="obProblem" type="range" min="1" max="10" value="5" /></label>
+            <label>Conocimiento práctico <span id="vKnowledge">5</span>/10<input id="obKnowledge" type="range" min="1" max="10" value="5" /></label>
+            <label>Creatividad <span id="vCreativity">5</span>/10<input id="obCreativity" type="range" min="1" max="10" value="5" /></label>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <h2>✨ Carisma</h2>
+          <div class="rating-grid">
+            <label>Comunicación <span id="vCommunication">5</span>/10<input id="obCommunication" type="range" min="1" max="10" value="5" /></label>
+            <label>Habilidades sociales <span id="vSocial">5</span>/10<input id="obSocial" type="range" min="1" max="10" value="5" /></label>
+            <label>Liderazgo <span id="vLeadership">5</span>/10<input id="obLeadership" type="range" min="1" max="10" value="5" /></label>
+            <label>Control emocional <span id="vEmotional">5</span>/10<input id="obEmotional" type="range" min="1" max="10" value="5" /></label>
+            <label>Integridad / valores <span id="vIntegrity">5</span>/10<input id="obIntegrity" type="range" min="1" max="10" value="5" /></label>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <h2>⚡ Rendimiento</h2>
+          <div class="rating-grid">
+            <label>Disciplina <span id="vDiscipline">5</span>/10<input id="obDiscipline" type="range" min="1" max="10" value="5" /></label>
+            <label>Constancia <span id="vConsistency">5</span>/10<input id="obConsistency" type="range" min="1" max="10" value="5" /></label>
+            <label>Organización <span id="vOrganization">5</span>/10<input id="obOrganization" type="range" min="1" max="10" value="5" /></label>
+            <label>Productividad <span id="vProductivity">5</span>/10<input id="obProductivity" type="range" min="1" max="10" value="5" /></label>
+            <label>Finanzas personales <span id="vFinance">5</span>/10<input id="obFinance" type="range" min="1" max="10" value="5" /></label>
+          </div>
+        </div>
+
+        <div class="onboarding-section">
+          <h2>💪 Físico</h2>
+          <div class="rating-grid">
+            <label>Fuerza <span id="vStrength">5</span>/10<input id="obStrength" type="range" min="1" max="10" value="5" /></label>
+            <label>Resistencia <span id="vEndurance">5</span>/10<input id="obEndurance" type="range" min="1" max="10" value="5" /></label>
+            <label>Velocidad / potencia <span id="vPower">5</span>/10<input id="obPower" type="range" min="1" max="10" value="5" /></label>
+            <label>Movilidad <span id="vMobility">5</span>/10<input id="obMobility" type="range" min="1" max="10" value="5" /></label>
+            <label>Salud general <span id="vHealth">5</span>/10<input id="obHealth" type="range" min="1" max="10" value="5" /></label>
+          </div>
+          <div class="form-grid compact">
+            <label>Sueño promedio (h)<input id="obSleep" type="number" min="0" max="14" step="0.5" value="7" /></label>
+            <label>Entrenamientos por semana<input id="obTrainingDays" type="number" min="0" max="14" value="3" /></label>
+          </div>
+        </div>
+
+        <button class="primary wide big" type="submit">Crear personaje</button>
+        <button id="cancelOnboarding" class="ghost wide hidden" type="button">Cancelar</button>
+      </form>
+    </section>
+  </div>
+
   <div class="app-shell">
     <header class="topbar">
       <div>
-        <div class="eyebrow">PERFIL DE PERSONAJE</div>
+        <div class="eyebrow">SISTEMA DE PROGRESIÓN PERSONAL</div>
         <h1>Vida RPG</h1>
       </div>
       <button id="installBtn" class="ghost hidden">Instalar</button>
     </header>
 
+    <nav class="quick-nav">
+      <a href="#todaySection">Hoy</a>
+      <a href="#skillsSection">Habilidades</a>
+      <a href="#historySection">Historial</a>
+      <a href="#profileSection">Perfil</a>
+    </nav>
+
     <main>
-      <section class="hero card">
+      <section id="profileSection" class="hero card">
         <div class="avatar-wrap">
           <img id="avatar" alt="Foto de perfil" />
           <label class="avatar-upload">Cambiar foto<input id="avatarInput" type="file" accept="image/*" /></label>
         </div>
         <div class="hero-copy">
           <div class="name-row">
-            <input id="playerName" class="name-input" value="Facu" aria-label="Nombre" />
-            <span id="rankPill" class="pill">Maestro</span>
+            <input id="playerName" class="name-input" value="Jugador" aria-label="Nombre" />
+            <span id="rankPill" class="pill">Novato</span>
           </div>
-          <div class="level-line">Nivel general <strong id="generalLevel">62</strong></div>
+          <div class="level-line">Nivel general <strong id="generalLevel">50</strong></div>
           <div class="progress"><span id="generalBar"></span></div>
+          <div class="muted" id="profileMeta"></div>
           <div class="muted" id="todayLabel"></div>
+          <button id="recalibrateBtn" class="ghost small-btn">Rehacer evaluación inicial</button>
         </div>
       </section>
 
       <section class="attributes-grid" id="attributesGrid"></section>
 
-      <section class="card">
+      <section id="todaySection" class="card">
         <div class="section-head">
           <div>
             <div class="eyebrow">HOY</div>
@@ -45,18 +124,30 @@
           </div>
           <div class="xp-badge"><span id="todayXp">0</span> XP</div>
         </div>
+
         <div id="dailyTasks" class="task-list"></div>
+
         <form id="addTaskForm" class="add-task">
           <input id="newTaskText" placeholder="Agregar tarea personal..." required />
-          <select id="newTaskCategory">
+          <select id="newTaskCategory" aria-label="Atributo">
             <option value="Rendimiento">Rendimiento</option>
             <option value="Intelecto">Intelecto</option>
             <option value="Carisma">Carisma</option>
             <option value="Físico">Físico</option>
           </select>
+          <select id="newTaskSkill" aria-label="Habilidad"></select>
           <input id="newTaskXp" type="number" min="1" max="50" value="2" aria-label="XP" />
           <button type="submit">Agregar</button>
         </form>
+      </section>
+
+      <section id="skillsSection" class="card section-space">
+        <div class="section-head">
+          <div><div class="eyebrow">EXPERIENCIA</div><h2>Habilidades</h2></div>
+          <span class="pill">20 skills</span>
+        </div>
+        <p class="note">El XP va a una habilidad concreta. Subir puntos se vuelve más difícil a medida que el nivel es mayor.</p>
+        <div id="skillsGrid" class="skills-grid"></div>
       </section>
 
       <section class="two-col">
@@ -76,35 +167,40 @@
           <label class="setting-row">Hora<input id="reminderTime" type="time" value="21:00" /></label>
           <label class="setting-row">Mensaje<input id="reminderText" value="Completá tu registro de Vida RPG" /></label>
           <button id="enableNotifications" class="primary wide">Activar notificaciones</button>
-          <p class="note">En esta versión, el aviso es confiable mientras la app está abierta o activa. Para avisos push incluso con la app cerrada hay que conectar un backend de notificaciones.</p>
+          <p class="note">En esta versión, el aviso es confiable mientras la app está abierta o activa. Los push con la app cerrada requerirán backend.</p>
         </section>
       </section>
 
       <section class="card">
         <div class="section-head">
-          <div><div class="eyebrow">FÍSICO</div><h2>Fuerza · torso superior</h2></div>
-          <div class="xp-badge"><span id="forceScore">31</span>/100</div>
+          <div><div class="eyebrow">FÍSICO</div><h2>Fuerza · seguimiento actual</h2></div>
+          <div class="xp-badge"><span id="forceScore">0</span>/100</div>
         </div>
+        <p id="strengthModeNote" class="note"></p>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Ejercicio</th><th>Actual</th><th>Máx.</th><th>Puntaje</th></tr></thead>
+            <thead><tr><th>Ejercicio</th><th>Actual</th><th>Referencia</th><th>Puntaje</th></tr></thead>
             <tbody id="strengthTable"></tbody>
           </table>
         </div>
       </section>
 
-      <section class="two-col">
-        <section class="card">
-          <div class="section-head"><div><div class="eyebrow">RACHAS</div><h2>Consistencia</h2></div></div>
-          <div class="stat-row"><span>Racha actual</span><strong id="streak">0 días</strong></div>
-          <div class="stat-row"><span>Mejor racha</span><strong id="bestStreak">0 días</strong></div>
-          <div class="stat-row"><span>Tareas completadas</span><strong id="tasksCompleted">0</strong></div>
-        </section>
+      <section id="historySection" class="card section-space">
+        <div class="section-head">
+          <div><div class="eyebrow">HISTORIAL</div><h2>Tu progreso en el tiempo</h2></div>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-card"><span>Últimos 7 días</span><strong id="weekXp">0 XP</strong><small id="weekTasks">0 tareas</small></div>
+          <div class="summary-card"><span>Últimos 30 días</span><strong id="monthXp">0 XP</strong><small id="monthTasks">0 tareas</small></div>
+          <div class="summary-card"><span>Racha actual</span><strong id="streak">0 días</strong><small>actividad diaria</small></div>
+          <div class="summary-card"><span>Mejor racha</span><strong id="bestStreak">0 días</strong><small id="tasksCompleted">0 tareas totales</small></div>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
 
-        <section class="card">
-          <div class="section-head"><div><div class="eyebrow">LOGROS</div><h2>Desbloqueos</h2></div></div>
-          <div id="achievements" class="achievements"></div>
-        </section>
+      <section class="card section-space">
+        <div class="section-head"><div><div class="eyebrow">LOGROS</div><h2>Desbloqueos</h2></div></div>
+        <div id="achievements" class="achievements"></div>
       </section>
     </main>
   </div>
