@@ -1,0 +1,17 @@
+VIDA RPG V6
+
+NUEVO
+- Misiones adaptativas diarias, boss semanal y cofre.
+- XP de personaje separado del nivel de habilidades.
+- Nivel de habilidad basado en evaluación/evidencia, no en XP automático.
+- Dietario con seguimiento diario, swaps y sugerencias de ajuste tras tendencia suficiente.
+- Academia por niveles, recomendación adaptativa, quizzes mezclados y certificaciones.
+- Progreso con gráficos e insights.
+- Títulos, marcos, briefing diario y ascensos.
+- Cuenta, exportar/importar/eliminar datos y sincronización Supabase preparada.
+- Hooks preparados para Premium y anuncios recompensados reales.
+
+SERVICIOS EXTERNOS
+La app funciona localmente sin configurar nada. Para nube: editar config.js y ejecutar SUPABASE_SETUP.sql.
+Para Premium: configurar premiumCheckoutUrl o integrar un proveedor.
+Para anuncios: definir window.VIDA_RPG_REWARDED_AD.show() con el SDK del proveedor. Nunca se simula una recompensa.
