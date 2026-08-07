@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Vida RPG</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PERFIL DE PERSONAJE</div>
+        <h1>Vida RPG</h1>
+      </div>
+      <button id="installBtn" class="ghost hidden">Instalar</button>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <div class="avatar-wrap">
+          <img id="avatar" alt="Foto de perfil" />
+          <label class="avatar-upload">Cambiar foto<input id="avatarInput" type="file" accept="image/*" /></label>
+        </div>
+        <div class="hero-copy">
+          <div class="name-row">
+            <input id="playerName" class="name-input" value="Facu" aria-label="Nombre" />
+            <span id="rankPill" class="pill">Maestro</span>
+          </div>
+          <div class="level-line">Nivel general <strong id="generalLevel">62</strong></div>
+          <div class="progress"><span id="generalBar"></span></div>
+          <div class="muted" id="todayLabel"></div>
+        </div>
+      </section>
+
+      <section class="attributes-grid" id="attributesGrid"></section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">HOY</div>
+            <h2>Misiones y tareas</h2>
+          </div>
+          <div class="xp-badge"><span id="todayXp">0</span> XP</div>
+        </div>
+        <div id="dailyTasks" class="task-list"></div>
+        <form id="addTaskForm" class="add-task">
+          <input id="newTaskText" placeholder="Agregar tarea personal..." required />
+          <select id="newTaskCategory">
+            <option value="Rendimiento">Rendimiento</option>
+            <option value="Intelecto">Intelecto</option>
+            <option value="Carisma">Carisma</option>
+            <option value="Físico">Físico</option>
+          </select>
+          <input id="newTaskXp" type="number" min="1" max="50" value="2" aria-label="XP" />
+          <button type="submit">Agregar</button>
+        </form>
+      </section>
+
+      <section class="two-col">
+        <section class="card">
+          <div class="section-head"><div><div class="eyebrow">CHECK-IN</div><h2>Estado del día</h2></div></div>
+          <div class="checkin-grid">
+            <label>Horas de sueño<input id="sleepHours" type="number" min="0" max="14" step="0.5" /></label>
+            <label>Energía (1-10)<input id="energy" type="number" min="1" max="10" /></label>
+            <label>Ánimo (1-10)<input id="mood" type="number" min="1" max="10" /></label>
+            <label>Nota<textarea id="dayNote" rows="3" placeholder="Algo para recordar..."></textarea></label>
+          </div>
+          <button id="saveCheckin" class="primary wide">Guardar check-in</button>
+        </section>
+
+        <section class="card">
+          <div class="section-head"><div><div class="eyebrow">RECORDATORIO</div><h2>Notificación diaria</h2></div></div>
+          <label class="setting-row">Hora<input id="reminderTime" type="time" value="21:00" /></label>
+          <label class="setting-row">Mensaje<input id="reminderText" value="Completá tu registro de Vida RPG" /></label>
+          <button id="enableNotifications" class="primary wide">Activar notificaciones</button>
+          <p class="note">En esta versión, el aviso es confiable mientras la app está abierta o activa. Para avisos push incluso con la app cerrada hay que conectar un backend de notificaciones.</p>
+        </section>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div><div class="eyebrow">FÍSICO</div><h2>Fuerza · torso superior</h2></div>
+          <div class="xp-badge"><span id="forceScore">31</span>/100</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ejercicio</th><th>Actual</th><th>Máx.</th><th>Puntaje</th></tr></thead>
+            <tbody id="strengthTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <section class="card">
+          <div class="section-head"><div><div class="eyebrow">RACHAS</div><h2>Consistencia</h2></div></div>
+          <div class="stat-row"><span>Racha actual</span><strong id="streak">0 días</strong></div>
+          <div class="stat-row"><span>Mejor racha</span><strong id="bestStreak">0 días</strong></div>
+          <div class="stat-row"><span>Tareas completadas</span><strong id="tasksCompleted">0</strong></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head"><div><div class="eyebrow">LOGROS</div><h2>Desbloqueos</h2></div></div>
+          <div id="achievements" class="achievements"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
