@@ -1,8 +1,9 @@
 const $=(s)=>document.querySelector(s);
-const storeKey='vidaRpgStateV3';
+const storeKey='vidaRpgStateV4';
+const v3Key='vidaRpgStateV3';
 const v2Key='vidaRpgStateV2';
 const v1Key='vidaRpgStateV1';
-const todayKey=()=>new Date().toISOString().slice(0,10);
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,n));
 const rank=(n)=>n>=91?'Trascendente':n>=81?'Mítico':n>=71?'Legendario':n>=61?'Maestro':n>=51?'Diamante':n>=41?'Platino':n>=31?'Oro':n>=21?'Plata':n>=11?'Bronce':'Novato';
 const escapeHtml=(s)=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
@@ -82,8 +83,10 @@ const academyLessons=[
 ];
 
 const freshDefaults={
-  version:3,
+  version:4,
+  assessmentEngineVersion:0,
   assessmentComplete:false,
+  assessmentReport:null,
   player:{name:'Jugador',age:null,height:null,weight:null,context:'trabajo',goal:'general',createdAt:null},
   avatar:'',
   baseSkills:Object.fromEntries(allSkills.map(k=>[k,50])),
@@ -102,14 +105,21 @@ const freshDefaults={
 };
 
 function clone(x){return structuredClone(x)}
+function mergeSaved(s){return {...clone(freshDefaults),...s,player:{...freshDefaults.player,...(s.player||{})},baseSkills:{...freshDefaults.baseSkills,...(s.baseSkills||{})},skillConfidence:{...freshDefaults.skillConfidence,...(s.skillConfidence||{})},days:s.days||{},academyProgress:s.academyProgress||{}}}
 
 function migrate(){
   try{
-    const raw3=localStorage.getItem(storeKey);
+    const raw4=localStorage.getItem(storeKey);
+    if(raw4)return mergeSaved(JSON.parse(raw4));
+
+    const raw3=localStorage.getItem(v3Key);
     if(raw3){
-      const s=JSON.parse(raw3);
-      return {...clone(freshDefaults),...s,player:{...freshDefaults.player,...(s.player||{})},baseSkills:{...freshDefaults.baseSkills,...(s.baseSkills||{})},skillConfidence:{...freshDefaults.skillConfidence,...(s.skillConfidence||{})},days:s.days||{},academyProgress:s.academyProgress||{}};
+      const s=mergeSaved(JSON.parse(raw3));
+      s.version=4;s.assessmentEngineVersion=0;s.assessmentComplete=false;s.assessmentReport=null;
+      localStorage.setItem(storeKey,JSON.stringify(s));
+      return s;
     }
+
     const raw2=localStorage.getItem(v2Key);
     if(raw2){
       const old=JSON.parse(raw2),s=clone(freshDefaults);
@@ -117,8 +127,7 @@ function migrate(){
       s.strengthAssessment=old.strengthAssessment??s.strengthAssessment;s.useMeasuredStrength=!!old.useMeasuredStrength;
       if(Array.isArray(old.strength)&&old.strength.length)s.strength=old.strength;
       s.reminderTime=old.reminderTime||s.reminderTime;s.reminderText=old.reminderText||s.reminderText;s.days=old.days||{};s.bestStreak=old.bestStreak||0;
-      // Conserva todo, pero pide la nueva evaluación inteligente una vez.
-      s.assessmentComplete=false;
+      localStorage.setItem(storeKey,JSON.stringify(s));
       return s;
     }
     const raw1=localStorage.getItem(v1Key);
@@ -126,6 +135,7 @@ function migrate(){
       const old=JSON.parse(raw1),s=clone(freshDefaults);
       s.player.name=old.playerName||'Jugador';s.avatar=old.avatar||'';s.days=old.days||{};s.bestStreak=old.bestStreak||0;
       if(Array.isArray(old.strength)&&old.strength.length){s.strength=old.strength;s.useMeasuredStrength=true}
+      localStorage.setItem(storeKey,JSON.stringify(s));
       return s;
     }
   }catch(e){console.warn('Migración',e)}
@@ -135,52 +145,174 @@ function migrate(){
 let state=migrate();
 function save(){localStorage.setItem(storeKey,JSON.stringify(state));render()}
 
-function contextWord(){
-  if(state.player.context==='estudio')return 'compañero de estudio';
-  if(state.player.context==='independiente')return 'persona con la que trabajás';
-  if(state.player.context==='busqueda')return 'persona de un equipo';
-  return 'compañero de trabajo';
+function contextLabel(){
+  const c=state.player.context;
+  if(c==='estudio')return 'estudio';
+  if(c==='ambos')return 'trabajo y estudio';
+  if(c==='independiente')return 'trabajo independiente';
+  if(c==='busqueda')return 'búsqueda laboral';
+  return c==='otro'?'tu actividad':'trabajo';
+}
+function shuffle(arr){
+  const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;
+}
+function choice(label,value){return{label,value}}
+function objectiveChoice(label,correct){return{label,correct}}
+function prepareQuestion(q){return{...q,options:shuffle(q.options.map(o=>({...o})))}}
+
+const objectiveBanks={
+  logica:{cat:'Intelecto',skill:'Inteligencia aplicada',title:'Razonamiento',items:{
+    1:{text:'¿Cuánto es 7 × 8?',options:[objectiveChoice('54',false),objectiveChoice('56',true),objectiveChoice('64',false),objectiveChoice('48',false)]},
+    2:{text:'Un producto cuesta $24.000 y tiene 25% de descuento. ¿Cuál es el precio final?',options:[objectiveChoice('$18.000',true),objectiveChoice('$19.000',false),objectiveChoice('$20.000',false),objectiveChoice('$16.000',false)]},
+    3:{text:'¿Qué número sigue? 2, 6, 12, 20, 30, ...',options:[objectiveChoice('36',false),objectiveChoice('40',false),objectiveChoice('42',true),objectiveChoice('44',false)]},
+    4:{text:'3 máquinas hacen 3 piezas en 3 minutos. Al mismo ritmo, ¿cuántas piezas hacen 6 máquinas en 6 minutos?',options:[objectiveChoice('6',false),objectiveChoice('9',false),objectiveChoice('12',true),objectiveChoice('18',false)]},
+    5:{text:'Todas las A son B. Ninguna B es C. ¿Puede existir una A que sea C?',options:[objectiveChoice('Sí, siempre',false),objectiveChoice('Sí, a veces',false),objectiveChoice('No',true),objectiveChoice('No se puede saber',false)]}
+  }},
+  problemas:{cat:'Intelecto',skill:'Resolución de problemas',title:'Resolución de problemas',items:{
+    1:{text:'Algo que funcionaba dejó de funcionar. ¿Cuál es el mejor primer paso?',options:[objectiveChoice('Cambiar varias cosas juntas',false),objectiveChoice('Definir exactamente qué falla y desde cuándo',true),objectiveChoice('Repetir lo mismo muchas veces',false),objectiveChoice('Buscar culpables',false)]},
+    2:{text:'Un error empezó justo después de modificar una configuración. ¿Qué prueba da información más limpia?',options:[objectiveChoice('Cambiar tres configuraciones más',false),objectiveChoice('Volver temporalmente la modificación y comparar',true),objectiveChoice('Reiniciar sin registrar nada',false),objectiveChoice('Esperar a que desaparezca',false)]},
+    3:{text:'Las ventas bajaron 15%. El tráfico no cambió, pero la conversión sí. ¿Dónde investigarías primero?',options:[objectiveChoice('En el paso entre visita y compra',true),objectiveChoice('Sólo en publicidad',false),objectiveChoice('En la cantidad de empleados',false),objectiveChoice('En cualquier dato al azar',false)]},
+    4:{text:'Tenés dos soluciones: A cuesta 10 y evita una pérdida esperada de 12; B cuesta 5 y evita una pérdida esperada de 4. Si todo lo demás fuera igual, ¿cuál crea más valor esperado?',options:[objectiveChoice('A',true),objectiveChoice('B',false),objectiveChoice('Son iguales',false),objectiveChoice('No puede compararse',false)]},
+    5:{text:'Dos variables se mueven juntas. ¿Qué conclusión es válida sin más evidencia?',options:[objectiveChoice('Una causa necesariamente a la otra',false),objectiveChoice('Hay asociación, pero todavía no prueba causalidad',true),objectiveChoice('No tienen ninguna relación',false),objectiveChoice('La que cambió primero siempre es la causa',false)]}
+  }},
+  nutricion:{cat:'Nutrición',skill:null,title:'Conocimiento de nutrición',items:{
+    1:{text:'¿Cuál suele aportar más proteína por 100 g?',options:[objectiveChoice('Pechuga de pollo cocida',true),objectiveChoice('Manzana',false),objectiveChoice('Aceite de oliva',false),objectiveChoice('Arroz cocido',false)]},
+    2:{text:'Una etiqueta indica 180 kcal por porción y el paquete contiene 2 porciones. Si comés todo, ¿cuántas kcal indica la etiqueta?',options:[objectiveChoice('180',false),objectiveChoice('270',false),objectiveChoice('360',true),objectiveChoice('90',false)]},
+    3:{text:'Para perder grasa corporal a lo largo del tiempo, ¿qué condición es necesaria?',options:[objectiveChoice('Eliminar todos los carbohidratos',false),objectiveChoice('Déficit energético sostenible',true),objectiveChoice('No comer después de las 18',false),objectiveChoice('Usar suplementos',false)]},
+    4:{text:'El peso sube 1 kg de un día al otro. ¿Qué afirmación es más correcta?',options:[objectiveChoice('Seguro ganaste 1 kg de grasa',false),objectiveChoice('Puede cambiar por agua, glucógeno, comida y otros factores; un día no alcanza para concluir grasa',true),objectiveChoice('Seguro ganaste músculo',false),objectiveChoice('La balanza dejó de servir',false)]},
+    5:{text:'Para comparar dos alimentos con tamaños de porción distintos, ¿qué referencia suele ser más útil?',options:[objectiveChoice('El color del paquete',false),objectiveChoice('La misma cantidad, por ejemplo 100 g',true),objectiveChoice('La palabra “fit”',false),objectiveChoice('Sólo el precio total',false)]}
+  }}
+};
+
+function contextScenarioQuestions(){
+  const c=state.player.context;
+  if(c==='estudio')return[
+    {id:'ctx-com',cat:'Carisma',title:'Trabajo grupal',skill:'Comunicación',kind:'scenario',consistencyKey:'comunicacion',text:'Un compañero del trabajo grupal entrega una parte que no cumple lo acordado y te complica el resto. ¿Qué hacés?',options:[choice('Le digo exactamente qué falta, escucho qué pasó y acordamos cómo corregirlo y para cuándo',3),choice('Lo arreglo yo sin decir nada para terminar más rápido',1),choice('Le digo al grupo que esa persona siempre trabaja mal',0),choice('Espero hasta el último momento para ver si se da cuenta',0)]},
+    {id:'ctx-social',cat:'Carisma',title:'Desacuerdo',skill:'Habilidades sociales',kind:'scenario',text:'En una discusión de grupo defendés una idea, pero otra persona propone algo distinto y tiene buenos argumentos. ¿Qué hacés?',options:[choice('Pregunto cómo llegó a esa conclusión y comparo ambas ideas con el objetivo del trabajo',3),choice('Mantengo mi postura para no quedar débil',1),choice('Acepto sin entender para evitar conflicto',1),choice('Me retiro de la discusión',0)]},
+    {id:'ctx-lead',cat:'Carisma',title:'Coordinación',skill:'Liderazgo',kind:'scenario',text:'El grupo está desordenado y nadie sabe qué falta. ¿Qué hacés?',options:[choice('Propongo ordenar objetivo, pendientes, responsables y una revisión',3),choice('Hago mi parte y dejo que el resto se organice solo',1),choice('Hago todo yo',1),choice('Doy órdenes sin verificar si tienen sentido para los demás',1)]}
+  ];
+  if(c==='independiente')return[
+    {id:'ctx-com',cat:'Carisma',title:'Cambio de alcance',skill:'Comunicación',kind:'scenario',consistencyKey:'comunicacion',text:'Un cliente pide algo extra que no estaba incluido y espera que esté listo en la misma fecha. ¿Qué hacés?',options:[choice('Aclaro alcance, impacto en tiempo/costo y acordamos qué se prioriza',3),choice('Digo que sí y después veo cómo llego',1),choice('Me enojo porque debería saberlo',0),choice('Ignoro el pedido hasta que vuelva a preguntar',0)]},
+    {id:'ctx-social',cat:'Carisma',title:'Colaborador',skill:'Habilidades sociales',kind:'scenario',text:'Una persona con la que trabajás tiene una forma distinta de hacer una tarea, pero obtiene buenos resultados. ¿Qué hacés?',options:[choice('Comparo resultados y restricciones antes de insistir con mi método',3),choice('Le pido que lo haga como yo porque es mi forma',1),choice('Evito volver a trabajar con esa persona',0),choice('Le digo que está bien aunque creo que generará un problema',1)]},
+    {id:'ctx-lead',cat:'Carisma',title:'Coordinación',skill:'Liderazgo',kind:'scenario',text:'Un proyecto con varias personas empieza a atrasarse. ¿Qué hacés?',options:[choice('Hago visible qué bloquea, quién tiene cada próximo paso y cuándo se revisa',3),choice('Tomo todas las tareas para asegurarme',1),choice('Espero a que cada uno resuelva lo suyo',1),choice('Presiono sin identificar el bloqueo',0)]}
+  ];
+  if(c==='busqueda')return[
+    {id:'ctx-com',cat:'Carisma',title:'Entrevista',skill:'Comunicación',kind:'scenario',consistencyKey:'comunicacion',text:'En una entrevista no entendés bien una pregunta. ¿Qué hacés?',options:[choice('Pido una aclaración breve y después respondo con un ejemplo concreto',3),choice('Improviso cualquier respuesta para no admitirlo',1),choice('Cambio de tema',0),choice('Respondo sólo sí o no',1)]},
+    {id:'ctx-social',cat:'Carisma',title:'Networking',skill:'Habilidades sociales',kind:'scenario',text:'Conocés a alguien de un área que te interesa. ¿Cómo iniciarías la conversación?',options:[choice('Hago una pregunta concreta sobre su experiencia y escucho antes de pedir algo',3),choice('Le mando de entrada mi CV sin contexto',1),choice('No hablo porque podría molestar',0),choice('Intento impresionar exagerando experiencia',0)]},
+    {id:'ctx-lead',cat:'Carisma',title:'Coordinación',skill:'Liderazgo',kind:'scenario',text:'En una actividad grupal nadie organiza el trabajo. ¿Qué hacés?',options:[choice('Propongo objetivo, reparto voluntario de pasos y una revisión',3),choice('Espero a que alguien tome el control',1),choice('Hago todo sin avisar',1),choice('Ordeno a todos sin escuchar',1)]}
+  ];
+  // Trabajo, trabajo+estudio y otros: escenario de empleado/compañero, no de jefe.
+  return[
+    {id:'ctx-com',cat:'Carisma',title:'Error de un compañero',skill:'Comunicación',kind:'scenario',consistencyKey:'comunicacion',text:'Un compañero de trabajo comete un error que te complica una tarea. ¿Qué hacés?',options:[choice('Le explico el hecho y el impacto en privado, escucho qué pasó y acordamos el próximo paso',3),choice('Lo corrijo yo sin hablarlo',1),choice('Lo expongo delante de otros',0),choice('No digo nada y acumulo bronca',0)]},
+    {id:'ctx-social',cat:'Carisma',title:'Desacuerdo',skill:'Habilidades sociales',kind:'scenario',text:'Un compañero propone una forma distinta de hacer algo y no estás de acuerdo. ¿Qué hacés?',options:[choice('Pregunto el razonamiento, explico mis objeciones y comparamos contra el resultado buscado',3),choice('Insisto con mi idea hasta que acepte',1),choice('Digo que sí aunque crea que está mal',1),choice('Evito volver a trabajar con esa persona',0)]},
+    {id:'ctx-lead',cat:'Carisma',title:'Iniciativa de equipo',skill:'Liderazgo',kind:'scenario',text:'En una tarea grupal nadie tiene claro qué falta y se empieza a perder tiempo. ¿Qué hacés?',options:[choice('Propongo ordenar objetivo, pendientes, responsables y una revisión, aunque no sea el jefe',3),choice('Hago sólo lo mío y espero',1),choice('Me cargo todo para terminar más rápido',1),choice('Empiezo a dar órdenes sin entender el problema',1)]}
+  ];
 }
 
-const assessmentQuestions=[
- {cat:'Intelecto',title:'Cálculo práctico',text:'Un producto cuesta $24.000 y tiene 25% de descuento. ¿Cuál es el precio final?',skill:'Inteligencia aplicada',objective:true,options:[['$18.000',78],['$19.000',42],['$20.000',42],['$16.000',35]]},
- {cat:'Intelecto',title:'Patrones',text:'¿Qué número sigue? 3, 6, 12, 24, ...',skill:'Inteligencia aplicada',objective:true,options:[['48',78],['36',42],['30',38],['27',35]]},
- {cat:'Intelecto',title:'Conocimiento práctico',text:'Necesitás aprender una herramienta nueva para mañana. ¿Qué estrategia suele darte mejor señal de que realmente aprendiste?',skill:'Aprendizaje',options:[['Mirar muchos videos sin practicar',38],['Hacer una práctica corta, detectar errores y repetir',78],['Leer una definición una vez',45],['Esperar a sentirte seguro antes de probar',35]]},
- {cat:'Intelecto',title:'Resolver problemas',text:'Una tarea que siempre funcionaba empieza a fallar. ¿Qué hacés primero?',skill:'Resolución de problemas',options:[['Cambio varias cosas a la vez',38],['Defino qué cambió, reúno evidencia y pruebo una hipótesis',80],['Culpo a la última persona que la tocó',30],['Repito exactamente lo mismo muchas veces',42]]},
- {cat:'Intelecto',title:'Creatividad aplicada',text:'Tenés una limitación fuerte de presupuesto. ¿Cómo buscás una solución?',skill:'Creatividad',options:[['Descarto el objetivo',35],['Genero varias alternativas con restricciones y comparo trade-offs',78],['Copio la primera solución que encuentre',48],['Espero que aparezca una idea perfecta',38]]},
- {cat:'Intelecto',title:'Comprensión',text:'Si una explicación te parece clara pero el resultado práctico sale mal, ¿qué hacés?',skill:'Conocimiento',options:[['Asumo que igual lo sé',42],['Reviso qué parte no puedo aplicar y vuelvo a probar',76],['Evito volver al tema',34],['Memorizo más frases',46]]},
+function fixedAssessmentQuestions(){return[
+  ...contextScenarioQuestions(),
+  {id:'emotion-feedback',cat:'Carisma',title:'Recibir feedback',skill:'Control emocional',kind:'scenario',text:'Te señalan un error y al principio te parece injusto. ¿Qué hacés?',options:[choice('Pido el ejemplo concreto, escucho completo y después explico mi punto si hace falta',3),choice('Me justifico mientras la otra persona habla',1),choice('Acepto todo aunque no tenga sentido',1),choice('Corto la conversación',0)]},
+  {id:'integrity',cat:'Carisma',title:'Integridad',skill:'Integridad / valores',kind:'scenario',text:'Descubrís un error tuyo que nadie notó y que te favorece. ¿Qué hacés?',options:[choice('Lo informo y corrijo aunque me incomode',3),choice('Espero a ver si alguien lo descubre',1),choice('Lo oculto porque quizá no tenga consecuencias',0),choice('Busco una forma de responsabilizar al proceso',0)]},
+  {id:'creative',cat:'Intelecto',title:'Creatividad aplicada',skill:'Creatividad',kind:'scenario',text:'Tenés que lograr un resultado con bastante menos presupuesto del previsto. ¿Cómo empezás?',options:[choice('Defino restricciones, genero varias alternativas y comparo qué sacrifico en cada una',3),choice('Uso la primera solución barata que aparezca',1),choice('Asumo que no se puede hacer',0),choice('Espero una idea perfecta',0)]},
+  {id:'knowledge-source',cat:'Intelecto',title:'Evaluar información',skill:'Conocimiento',kind:'objective-lite',text:'Un video muestra que una estrategia funcionó para una persona. ¿Qué conclusión es más razonable?',options:[choice('Prueba que funciona para todos',0),choice('Es una experiencia útil, pero necesito más evidencia antes de generalizar',3),choice('Si tiene muchas visualizaciones debe ser cierta',0),choice('La experiencia no aporta ninguna información',1)]},
+  {id:'learning',cat:'Intelecto',title:'Aprendizaje',skill:'Aprendizaje',kind:'scenario',text:'Querés saber si realmente aprendiste algo nuevo. ¿Qué prueba te da mejor evidencia?',options:[choice('Intento explicarlo sin mirar y aplicarlo a un caso distinto',3),choice('Lo releo varias veces seguidas',1),choice('Marco casi todo el texto',1),choice('Lo guardo para más adelante',0)]},
+  {id:'org-source',cat:'Rendimiento',title:'Organización real',skill:'Organización',kind:'habit',consistencyKey:'organizacion',text:'En los últimos 30 días, ¿con qué frecuencia arrancaste el día sabiendo cuáles eran tus 2–3 prioridades principales?',options:[choice('Casi nunca',0),choice('1–2 días por semana',1),choice('3–4 días por semana',2),choice('5 o más días por semana',3)]},
+  {id:'constancy',cat:'Rendimiento',title:'Constancia real',skill:'Constancia',kind:'habit',text:'Cuando empezás una rutina que querés sostener varias semanas, ¿qué describe mejor lo que suele pasar de verdad?',options:[choice('La abandono en pocos días',0),choice('La hago de forma muy intermitente',1),choice('La sostengo la mayoría de las semanas, aunque tenga fallas',2),choice('La sostengo durante meses y tengo alguna forma de registro',3)]},
+  {id:'discipline-source',cat:'Rendimiento',title:'Disciplina sin motivación',skill:'Disciplina',kind:'habit',consistencyKey:'disciplina',text:'Cuando una tarea importante no te gusta y nadie te está controlando, ¿qué suele pasar?',options:[choice('La postergo hasta que se vuelve urgente',0),choice('A veces la hago y a veces la reemplazo por cosas fáciles',1),choice('Normalmente empiezo aunque no tenga ganas',2),choice('Tengo un sistema que hace que la empiece y la termine casi siempre',3)]},
+  {id:'productivity',cat:'Rendimiento',title:'Productividad',skill:'Productividad',kind:'scenario',text:'Terminaste una hora muy ocupada. ¿Qué evidencia indica mejor que fue productiva?',options:[choice('Avancé un resultado importante o eliminé un bloqueo relevante',3),choice('Respondí la mayor cantidad de mensajes',1),choice('No tuve ningún minuto libre',1),choice('Cambié entre muchas tareas',0)]},
+  {id:'finance',cat:'Rendimiento',title:'Finanzas personales',skill:'Finanzas personales',kind:'habit',text:'¿Cuál describe mejor tu manejo real del dinero durante los últimos 3 meses?',options:[choice('No sé con claridad cuánto gasto ni cuánto tengo disponible',0),choice('Miro saldos, pero casi no registro ni planifico',1),choice('Registro ingresos/gastos y tengo cierta planificación',2),choice('Registro, planifico, tengo colchón para imprevistos y decisiones de ahorro/inversión coherentes con mis objetivos',3)]},
+  {id:'strength',cat:'Físico',title:'Fuerza provisional',skill:'Fuerza',kind:'physical',text:'¿Cuál describe mejor tu entrenamiento de fuerza de los últimos 3 meses?',options:[choice('No entrené fuerza',0),choice('Entrené ocasionalmente, sin registrar',1),choice('Entrené regularmente y registré cargas o repeticiones',2),choice('Entrené de forma consistente con progresión registrada',3)]},
+  {id:'endurance',cat:'Físico',title:'Resistencia provisional',skill:'Resistencia',kind:'physical',text:'¿Qué esfuerzo continuo podrías completar hoy sin que sea algo excepcional para vos?',options:[choice('Caminar 20–30 minutos',0),choice('Actividad moderada o trote suave 20–30 minutos',1),choice('Actividad exigente 30–45 minutos',2),choice('Actividad exigente de resistencia alrededor de 60 minutos o más',3)]},
+  {id:'power',cat:'Físico',title:'Potencia provisional',skill:'Velocidad / Potencia',kind:'physical',text:'En los últimos 2 meses, ¿con qué frecuencia hiciste sprints, saltos, golpes explosivos u otra actividad de potencia?',options:[choice('Nunca',0),choice('Alguna vez aislada',1),choice('1–2 veces por semana',2),choice('3 o más veces por semana con intención de progresar',3)]},
+  {id:'mobility',cat:'Físico',title:'Movilidad provisional',skill:'Movilidad',kind:'physical',text:'Sin dolor y con control, ¿podés hacer una sentadilla profunda con los talones apoyados?',options:[choice('No',0),choice('Sólo con bastante dificultad',1),choice('Sí, razonablemente',2),choice('Sí, cómoda y controlada',3)]},
+  {id:'sleep',cat:'Físico',title:'Sueño',skill:'Salud física',kind:'habit',text:'En una semana normal, ¿cuánto dormís en promedio por noche?',options:[choice('Menos de 5 h',0),choice('5–6 h',1),choice('6–7 h',2),choice('7–9 h',3),choice('Más de 9 h casi siempre',2)]},
+  {id:'activity',cat:'Físico',title:'Actividad semanal',skill:'Salud física',kind:'habit',text:'En las últimas 4 semanas, ¿cuántos días por semana hiciste actividad física intencional en promedio?',options:[choice('0',0),choice('1–2',1),choice('3–4',2),choice('5 o más',3)]}
+];}
 
- {cat:'Carisma',title:'Error de otra persona',dynamic:true,text:()=>`Un ${contextWord()} comete un error que te complica. ¿Qué hacés?`,skill:'Comunicación',options:[['Lo confronto enojado delante de otros',28],['Describo el problema en privado, escucho su versión y acordamos el próximo paso',80],['No digo nada y acumulo bronca',36],['Se lo cuento a otras personas antes de hablarle',30]]},
- {cat:'Carisma',title:'Desacuerdo',dynamic:true,text:()=>`No estás de acuerdo con la idea de un ${contextWord()}. ¿Cuál es tu reacción más probable?`,skill:'Habilidades sociales',options:[['Intento entender el razonamiento y explico mi desacuerdo sin atacar',78],['Lo interrumpo para demostrar que está equivocado',32],['Digo que sí aunque no esté de acuerdo',42],['Evito trabajar con esa persona',35]]},
- {cat:'Carisma',title:'Coordinación',text:'En un trabajo grupal nadie está ordenando qué hace cada uno. ¿Qué hacés?',skill:'Liderazgo',options:[['Propongo un objetivo, reparto próximos pasos de común acuerdo y hago seguimiento',76],['Espero que otra persona lo resuelva',42],['Hago todo yo para ir más rápido',52],['Ordeno a todos sin preguntar nada',45]]},
- {cat:'Carisma',title:'Recibir feedback',text:'Te señalan un error que te molesta escuchar. ¿Qué respuesta es más útil?',skill:'Control emocional',options:[['Me defiendo antes de escuchar el ejemplo',35],['Escucho, pido un ejemplo concreto y decido qué puedo corregir',78],['Dejo de hablar con esa persona',30],['Acepto todo aunque no tenga sentido',48]]},
- {cat:'Carisma',title:'Integridad',text:'Detectás un error tuyo que nadie más notó y que te favorece. ¿Qué hacés?',skill:'Integridad / valores',options:[['Lo informo y corrijo aunque me incomode',82],['Espero a ver si alguien lo descubre',35],['Lo oculto porque nadie perdió nada todavía',28],['Culpo al proceso',32]]},
- {cat:'Carisma',title:'Confirmar entendimiento',text:'Dás una indicación importante. ¿Cómo reducís el riesgo de malentendido?',skill:'Comunicación',options:[['La repito más fuerte',38],['Confirmo resultado esperado, plazo y próximos pasos',80],['Mando más mensajes sin estructura',45],['Asumo que quedó claro',42]]},
+const consistencyProbes={
+  comunicacion:{id:'probe-com',cat:'Carisma',title:'Confirmar entendimiento',skill:'Comunicación',kind:'scenario',probeFor:'comunicacion',text:'Explicaste algo importante y la otra persona asiente. ¿Qué hacés si un malentendido podría costar tiempo o dinero?',options:[choice('Le pido que me diga cómo va a seguir o confirmamos próximos pasos',3),choice('Repito exactamente lo mismo',1),choice('Asumo que entendió',0),choice('Mando más información sin saber qué faltó',1)]},
+  organizacion:{id:'probe-org',cat:'Rendimiento',title:'Olvidos reales',skill:'Organización',kind:'habit',probeFor:'organizacion',text:'En el último mes, ¿cuántas veces una tarea importante se te pasó porque dependía sólo de acordarte?',options:[choice('Muchas veces',0),choice('Varias veces',1),choice('Una o dos veces',2),choice('Casi ninguna; uso algún sistema para lo importante',3)]},
+  disciplina:{id:'probe-disc',cat:'Rendimiento',title:'Tareas sin supervisión',skill:'Disciplina',kind:'habit',probeFor:'disciplina',text:'Cuando una tarea importante no tiene fecha externa ni alguien que la controle, ¿qué describe mejor tu conducta?',options:[choice('Suele quedar para después indefinidamente',0),choice('La hago sólo cuando aparece presión',1),choice('La programo y normalmente la hago',2),choice('Tengo un sistema y reviso si se cumplió',3)]}
+};
 
- {cat:'Rendimiento',title:'Planificación real',text:'En los últimos 30 días, ¿con qué frecuencia empezaste el día sabiendo cuáles eran tus 2–3 prioridades?',skill:'Organización',habit:true,options:[['Casi nunca',32],['1–2 días por semana',48],['3–4 días por semana',62],['5 o más días por semana',76]]},
- {cat:'Rendimiento',title:'Cumplimiento',text:'Cuando te proponés una rutina de varias semanas, ¿qué suele pasar?',skill:'Constancia',habit:true,options:[['La abandono en pocos días',32],['La sostengo intermitentemente',50],['La sostengo la mayoría de las semanas aunque tenga fallas',70],['La sostengo y registro durante meses',80]]},
- {cat:'Rendimiento',title:'Hacer lo incómodo',text:'Tenés una tarea importante que no te gusta y vence mañana. ¿Qué hacés normalmente?',skill:'Disciplina',habit:true,options:[['La pospongo hasta que sea una urgencia',38],['La divido y empiezo aunque no tenga ganas',78],['La reemplazo por tareas fáciles',42],['Espero motivación',35]]},
- {cat:'Rendimiento',title:'Productividad',text:'Terminaste una hora muy ocupada. ¿Qué indica mejor que fuiste productivo?',skill:'Productividad',options:[['Respondí la mayor cantidad de mensajes',45],['Avancé un resultado importante, aunque hice menos cosas',78],['Estuve ocupado todo el tiempo',48],['No tuve ningún minuto libre',42]]},
- {cat:'Rendimiento',title:'Finanzas personales',text:'¿Cuál se parece más a tu manejo real del dinero?',skill:'Finanzas personales',habit:true,options:[['No sé bien cuánto gasto ni cuánto tengo disponible',30],['Miro el saldo pero casi no registro ni planifico',45],['Registro gastos/ingresos y tengo cierta planificación',68],['Registro, presupuesto, fondo de emergencia e inversión coherente con objetivos',80]]},
- {cat:'Rendimiento',title:'Sistema contra olvidos',text:'Una tarea se repite cada semana y se te olvida. ¿Qué solución elegís?',skill:'Organización',options:[['Confiar más en mi memoria',40],['Crear un recordatorio/checklist recurrente',78],['Hacerla sólo cuando alguien me reclama',34],['Cambiar de tarea',30]]},
- {cat:'Rendimiento',title:'Interrupciones',text:'Tenés 45 minutos para una tarea importante y llegan mensajes no urgentes. ¿Qué hacés?',skill:'Productividad',options:[['Respondo cada mensaje apenas entra',38],['Protejo un bloque de foco y reviso mensajes después',76],['Abro varias tareas a la vez',40],['Dejo la tarea importante',32]]},
+function makeObjectiveQuestion(trackName,difficulty){
+  const track=objectiveBanks[trackName],item=track.items[difficulty];
+  return prepareQuestion({id:`obj-${trackName}-${difficulty}-${assessmentSession.adaptive[trackName].asked+1}`,cat:track.cat,title:`${track.title} · dificultad ${difficulty}/5`,skill:track.skill,kind:'adaptive-objective',track:trackName,difficulty,text:item.text,options:item.options});
+}
 
- {cat:'Físico',title:'Fuerza provisional',text:'¿Cuál describe mejor tu experiencia reciente con entrenamiento de fuerza?',skill:'Fuerza',lowConfidence:true,options:[['No entreno fuerza',35],['Entreno ocasionalmente, sin registrar progresión',48],['Entreno regularmente y registro cargas/repeticiones',62],['Entreno hace años con progresión y métricas consistentes',70]]},
- {cat:'Físico',title:'Resistencia',text:'¿Qué esfuerzo continuo podrías completar hoy sin que sea algo excepcional?',skill:'Resistencia',lowConfidence:true,options:[['Caminar 20–30 min',40],['Trote suave o actividad moderada 20–30 min',55],['Correr/actividad intensa 30–45 min',68],['Actividad intensa de resistencia 60 min o más',76]]},
- {cat:'Físico',title:'Potencia',text:'¿Hacés actualmente alguna actividad que requiera aceleraciones, saltos, golpes rápidos o sprints?',skill:'Velocidad / Potencia',lowConfidence:true,options:[['Nunca',38],['Muy ocasionalmente',48],['1–2 veces por semana',60],['3 o más veces por semana y con intención de progresar',68]]},
- {cat:'Físico',title:'Movilidad',text:'Sin dolor y con control, ¿podés hacer una sentadilla profunda manteniendo los talones apoyados?',skill:'Movilidad',lowConfidence:true,options:[['No',38],['Sólo con mucha dificultad',48],['Sí, razonablemente',65],['Sí, cómoda y controlada',72]]},
- {cat:'Físico',title:'Sueño',text:'En una semana normal, ¿cuánto dormís en promedio por noche?',skill:'Salud física',habit:true,options:[['Menos de 5 h',30],['5–6 h',45],['6–7 h',62],['7–9 h',78],['Más de 9 h casi siempre',62]]},
- {cat:'Físico',title:'Actividad semanal',text:'¿Cuántos días por semana hacés actividad física intencional?',skill:'Salud física',habit:true,options:[['0',32],['1–2',50],['3–4',68],['5 o más',75]]},
+function freshAssessmentSession(){return{
+  queue:[],current:null,answered:0,responses:[],evidence:Object.fromEntries(allSkills.map(s=>[s,[]])),
+  consistencySources:{},consistencyPairs:[],scheduledProbes:{},
+  adaptive:{logica:{ability:2.5,asked:0,correct:0,history:[]},problemas:{ability:2.5,asked:0,correct:0,history:[]},nutricion:{ability:2.5,asked:0,correct:0,history:[]}}
+}}
+let assessmentSession=freshAssessmentSession();
 
- {cat:'Nutrición',title:'Proteína',text:'¿Cuál suele aportar más proteína por 100 g?',nutrition:true,skill:'Conocimiento',objective:true,options:[['Pechuga de pollo cocida',80],['Arroz cocido',40],['Manzana',32],['Aceite de oliva',28]]},
- {cat:'Nutrición',title:'Pérdida de grasa',text:'Para perder grasa corporal a lo largo del tiempo, ¿qué condición es necesaria?',nutrition:true,skill:'Conocimiento',objective:true,options:[['Déficit energético sostenible',80],['Eliminar todos los carbohidratos',38],['No comer después de las 18',35],['Tomar suplementos quemadores',28]]},
- {cat:'Nutrición',title:'Proteína corporal',text:'¿Para qué es especialmente importante la proteína?',nutrition:true,skill:'Conocimiento',objective:true,options:[['Aportar aminoácidos para tejidos',80],['Reemplazar el sueño',25],['Hidratar el cuerpo mejor que el agua',28],['Evitar toda fatiga',25]],correctOnly:true},
- {cat:'Nutrición',title:'Etiqueta',text:'Un paquete tiene 2 porciones. La etiqueta dice 180 kcal por porción. Si comés todo el paquete, ¿cuántas kcal indica la etiqueta?',nutrition:true,skill:'Inteligencia aplicada',objective:true,options:[['180',35],['360',80],['90',30],['280',35]]},
- {cat:'Nutrición',title:'Plan sostenible',text:'¿Cuál tiene más probabilidades de sostenerse a largo plazo?',nutrition:true,skill:'Disciplina',options:[['Un plan compatible con gustos, horarios y objetivo',78],['Una dieta extrema con muchos alimentos prohibidos',35],['Cambiar de método cada pocos días',30],['Saltarse comidas para compensar siempre',32]]},
- {cat:'Intelecto',title:'Aplicación',text:'Leés una idea útil. ¿Qué acción genera mejor evidencia de aprendizaje?',skill:'Aprendizaje',options:[['Subrayarla',48],['Explicarla con tus palabras y aplicarla a un caso',80],['Guardarla para después',38],['Compartirla sin revisarla',42]]}
-];
+function buildInitialAssessmentQueue(){
+  const fixed=fixedAssessmentQuestions().map(prepareQuestion);
+  const firstObjectives=['logica','problemas','nutricion'].map(t=>makeObjectiveQuestion(t,2));
+  // Intercalar evita que el cuestionario se sienta como tres exámenes separados.
+  return [fixed[0],firstObjectives[0],fixed[1],fixed[2],fixed[3],fixed[4],firstObjectives[1],...fixed.slice(5,10),firstObjectives[2],...fixed.slice(10)];
+}
 
-let assessmentSession={index:0,answers:[],scores:{},evidence:{},nutritionCorrect:0,nutritionTotal:0};
+function scheduleConsistencyProbe(key){
+  if(!key||assessmentSession.scheduledProbes[key])return;
+  const probe=consistencyProbes[key];if(!probe)return;
+  assessmentSession.scheduledProbes[key]=true;assessmentSession.queue.push(prepareQuestion(probe));
+}
+
+function scheduleNextAdaptive(trackName){
+  const t=assessmentSession.adaptive[trackName];
+  if(t.asked<3)return assessmentSession.queue.push(makeObjectiveQuestion(trackName,clamp(Math.round(t.ability),1,5)));
+  // Una cuarta pregunta sólo cuando hubo respuestas mezcladas: ahí todavía hay incertidumbre.
+  const mixed=t.correct>0&&t.correct<t.asked;
+  if(t.asked<4&&mixed)assessmentSession.queue.push(makeObjectiveQuestion(trackName,clamp(Math.round(t.ability),1,5)));
+}
+
+function objectiveTrackScore(trackName){
+  const t=assessmentSession.adaptive[trackName];
+  const abilityScore=32+((clamp(t.ability,1,5)-1)/4)*50;
+  const accuracy=t.asked?t.correct/t.asked:.5;
+  return Math.round(clamp(abilityScore*.82+(32+accuracy*50)*.18,30,82));
+}
+
+function addEvidence(skill,kind,ratio,weight=1,meta={}){
+  if(!skill||!assessmentSession.evidence[skill])return;
+  assessmentSession.evidence[skill].push({kind,ratio:clamp(ratio,0,1),weight,...meta});
+}
+
+function evidenceToScore(e){
+  if(e.kind==='objective-score')return e.score;
+  if(e.kind==='physical')return 30+40*Math.pow(e.ratio,1.12);
+  if(e.kind==='habit')return 28+48*Math.pow(e.ratio,1.08);
+  if(e.kind==='objective-lite')return 30+48*e.ratio;
+  return 30+46*Math.pow(e.ratio,1.08);
+}
+
+function consistencyPenaltyFor(skill){
+  const pairs=assessmentSession.consistencyPairs.filter(p=>p.skill===skill);let penalty=0;
+  pairs.forEach(p=>{const d=Math.abs(p.a-p.b);if(d>.66)penalty+=6;else if(d>.4)penalty+=3});
+  return Math.min(8,penalty);
+}
+
+function assessmentSkillScore(skill){
+  const ev=assessmentSession.evidence[skill]||[];
+  if(!ev.length)return null;
+  let sum=0,w=0;for(const e of ev){const ww=e.weight||1;sum+=evidenceToScore(e)*ww;w+=ww}
+  let score=sum/(w||1)-consistencyPenaltyFor(skill);
+  const physical=['Fuerza','Resistencia','Velocidad / Potencia','Movilidad'].includes(skill);
+  score=Math.min(physical?70:82,score);
+  return Math.round(clamp(score,20,82));
+}
+
+function initialConfidenceFor(skill){
+  if(['Fuerza','Resistencia','Velocidad / Potencia','Movilidad'].includes(skill))return'baja';
+  const ev=assessmentSession.evidence[skill]||[],objective=ev.some(e=>e.kind==='objective-score');
+  const badConsistency=consistencyPenaltyFor(skill)>=3;
+  if(badConsistency)return'baja';
+  if(objective&&ev.length>=1)return'media';
+  if(ev.length>=2)return'media';
+  return'baja';
+}
 
 function questionText(q){return typeof q.text==='function'?q.text():q.text}
 
@@ -232,12 +364,32 @@ function rawForceScore(){
   const valid=measuredStrengthRows();if(!valid.length)return 0;
   return Math.round(valid.map(x=>clamp((Number(x.current)||0)/Number(x.max)*100)).reduce((a,b)=>a+b,0)/valid.length)
 }
+function behaviorCalibration(skill,base){
+  // Conducta real pesa de a poco y sólo cuando hay suficiente historial.
+  const calibratable=new Set(['Comunicación','Habilidades sociales','Liderazgo','Control emocional','Disciplina','Constancia','Organización','Productividad','Finanzas personales','Salud física']);
+  if(!calibratable.has(skill))return base;
+  let total=0,done=0;
+  Object.values(state.days||{}).forEach(d=>(d.tasks||[]).forEach(t=>{if(inferSkill(t)===skill){total++;if(t.done)done++}}));
+  if(total<8)return base;
+  const rate=done/total,observed=32+48*rate,weight=Math.min(.30,.08+(total-8)*.005);
+  return Math.round(base*(1-weight)+observed*weight);
+}
 function baseSkillScore(skill){
   if(skill==='Fuerza'&&state.useMeasuredStrength&&measuredStrengthRows().length)return rawForceScore();
-  return clamp(Number(state.baseSkills[skill])||50);
+  const base=clamp(Number(state.baseSkills[skill])||50);
+  return clamp(behaviorCalibration(skill,base));
+}
+function effectiveConfidence(skill){
+  if(skill==='Fuerza'&&state.useMeasuredStrength){const n=measuredStrengthRows().length;return n>=4?'alta':'media'}
+  let base=state.skillConfidence[skill]||'baja';
+  let total=0,done=0;Object.values(state.days||{}).forEach(d=>(d.tasks||[]).forEach(t=>{if(inferSkill(t)===skill){total++;if(t.done)done++}}));
+  const academy=Object.entries(state.academyProgress||{}).filter(([id,p])=>p.completed&&academyLessons.find(l=>l.id===id)?.skill===skill).length;
+  if(total>=25&&done>=12)return'alta';
+  if((total>=10&&done>=5)||academy>=3)return base==='alta'?'alta':'media';
+  return base;
 }
 function effectiveSkillData(){
-  const xp=xpBySkill(),out={};allSkills.forEach(skill=>out[skill]={...skillProgress(baseSkillScore(skill),xp[skill]),totalXp:xp[skill],base:baseSkillScore(skill),confidence:state.skillConfidence[skill]||'baja'});return out;
+  const xp=xpBySkill(),out={};allSkills.forEach(skill=>out[skill]={...skillProgress(baseSkillScore(skill),xp[skill]),totalXp:xp[skill],base:baseSkillScore(skill),confidence:effectiveConfidence(skill)});return out;
 }
 function effectiveAttributes(){
   const s=effectiveSkillData(),out={};Object.entries(skillMap).forEach(([a,names])=>out[a]=Math.round(names.reduce((sum,n)=>sum+s[n].score,0)/names.length));return out;
@@ -255,7 +407,7 @@ function renderProfile(){
   const meta=[];if(state.player.age)meta.push(`${state.player.age} años`);if(state.player.height)meta.push(`${state.player.height} cm`);if(state.player.weight)meta.push(`${state.player.weight} kg`);
   const contexts={trabajo:'Trabajo',estudio:'Estudio',ambos:'Trabajo + estudio',independiente:'Independiente',busqueda:'Búsqueda laboral',otro:'Otro'};if(state.player.context)meta.push(contexts[state.player.context]||state.player.context);
   $('#profileMeta').textContent=meta.join(' · ');
-  $('#assessmentMeta').textContent=state.assessmentComplete?`Evaluación inteligente · confianza global ${globalConfidence()} · Nutrición ${state.nutritionKnowledge||0}%`:'Evaluación inicial pendiente';
+  const report=state.assessmentReport;$('#assessmentMeta').textContent=state.assessmentComplete?`Evaluación adaptativa V4 · ${report?.questionCount||'—'} preguntas · confianza ${globalConfidence()} · Nutrición ${state.nutritionKnowledge||0}%`:'Evaluación adaptativa V4 pendiente';
   if(state.avatar)$('#avatar').src=state.avatar;else $('#avatar').removeAttribute('src');
 }
 function globalConfidence(){
@@ -327,59 +479,61 @@ function openAssessment(canCancel=true){
 function closeAssessment(){$('#assessmentOverlay').classList.add('hidden')}
 function beginAssessment(){
   state.player={...state.player,name:$('#asName').value.trim()||'Jugador',age:+$('#asAge').value||null,height:+$('#asHeight').value||null,weight:+$('#asWeight').value||null,context:$('#asContext').value,goal:$('#asGoal').value,createdAt:state.player.createdAt||new Date().toISOString()};
-  assessmentSession={index:0,answers:[],scores:{},evidence:{},nutritionCorrect:0,nutritionTotal:0};$('#assessmentProfileStep').classList.add('hidden');$('#assessmentQuestionStep').classList.remove('hidden');renderAssessmentQuestion();
+  assessmentSession=freshAssessmentSession();assessmentSession.queue=buildInitialAssessmentQueue();$('#assessmentProfileStep').classList.add('hidden');$('#assessmentQuestionStep').classList.remove('hidden');nextAssessmentQuestion();
+}
+function nextAssessmentQuestion(){
+  if(!assessmentSession.queue.length)return finishAssessmentScoring();
+  assessmentSession.current=assessmentSession.queue.shift();renderAssessmentQuestion();
 }
 function renderAssessmentQuestion(){
-  const i=assessmentSession.index,q=assessmentQuestions[i];$('#assessmentCategory').textContent=q.cat.toUpperCase();$('#assessmentQuestionTitle').textContent=q.title;$('#assessmentQuestionText').textContent=questionText(q);$('#assessmentIndex').textContent=i+1;$('#assessmentTotal').textContent=assessmentQuestions.length;$('#assessmentProgress').style.width=`${(i/assessmentQuestions.length)*100}%`;
-  $('#assessmentBackBtn').disabled=i===0;
-  $('#assessmentOptions').innerHTML=q.options.map((o,idx)=>`<button class="answer-btn" data-answer="${idx}">${escapeHtml(o[0])}</button>`).join('');
+  const q=assessmentSession.current;if(!q)return;
+  $('#assessmentCategory').textContent=`${q.cat.toUpperCase()} · ${q.kind==='adaptive-objective'?'PRUEBA ADAPTATIVA':'PERFIL'}`;
+  $('#assessmentQuestionTitle').textContent=q.title;$('#assessmentQuestionText').textContent=q.text;$('#assessmentIndex').textContent=assessmentSession.answered+1;
+  const projected=Math.max(assessmentSession.answered+1+assessmentSession.queue.length,28);$('#assessmentProgress').style.width=`${Math.min(94,assessmentSession.answered/projected*100)}%`;
+  $('#assessmentBackBtn').classList.add('hidden');
+  $('#assessmentOptions').innerHTML=q.options.map((o,idx)=>`<button class="answer-btn" data-answer="${idx}">${escapeHtml(o.label)}</button>`).join('');
 }
 function recordAssessmentAnswer(idx){
-  const q=assessmentQuestions[assessmentSession.index],score=Number(q.options[idx][1]??45);assessmentSession.answers[assessmentSession.index]=idx;
-  if(!assessmentSession.scores[q.skill])assessmentSession.scores[q.skill]=[];assessmentSession.scores[q.skill].push({score,weight:q.objective?1.4:q.habit?1.15:1,low:!!q.lowConfidence});
-  assessmentSession.evidence[q.skill]=(assessmentSession.evidence[q.skill]||0)+(q.objective?1.4:1);
-  if(q.nutrition){assessmentSession.nutritionTotal++;if(score>=75)assessmentSession.nutritionCorrect++}
-  assessmentSession.index++;
-  if(assessmentSession.index>=assessmentQuestions.length)finishAssessmentScoring();else renderAssessmentQuestion();
-}
-function rebuildAssessmentUntil(index){
-  const answers=[...assessmentSession.answers];assessmentSession={index:0,answers:[],scores:{},evidence:{},nutritionCorrect:0,nutritionTotal:0};
-  for(let i=0;i<index;i++){assessmentSession.index=i;recordAssessmentAnswerNoAdvance(answers[i])}
-  assessmentSession.index=index;assessmentSession.answers=answers.slice(0,index);
-}
-function recordAssessmentAnswerNoAdvance(idx){
-  const q=assessmentQuestions[assessmentSession.index],score=Number(q.options[idx][1]??45);
-  if(!assessmentSession.scores[q.skill])assessmentSession.scores[q.skill]=[];assessmentSession.scores[q.skill].push({score,weight:q.objective?1.4:q.habit?1.15:1,low:!!q.lowConfidence});
-  assessmentSession.evidence[q.skill]=(assessmentSession.evidence[q.skill]||0)+(q.objective?1.4:1);
-  if(q.nutrition){assessmentSession.nutritionTotal++;if(score>=75)assessmentSession.nutritionCorrect++}
-}
-function conservativeSkillScore(skill){
-  const arr=assessmentSession.scores[skill]||[];if(!arr.length)return 48;
-  const total=arr.reduce((s,x)=>s+x.score*x.weight,0),w=arr.reduce((s,x)=>s+x.weight,0);let avg=total/w;
-  // Conservador: el cuestionario por sí solo no entrega niveles de élite.
-  avg=Math.min(85,avg);
-  return Math.round(avg);
-}
-function confidenceFor(skill){
-  const e=assessmentSession.evidence[skill]||0;if(skill==='Fuerza'||skill==='Resistencia'||skill==='Velocidad / Potencia'||skill==='Movilidad')return'evaluación baja';
-  return e>=2.6?'alta':e>=1.7?'media':'baja';
+  const q=assessmentSession.current,selected=q?.options?.[idx];if(!q||!selected)return;
+  assessmentSession.responses.push({id:q.id,skill:q.skill||null,kind:q.kind,track:q.track||null,difficulty:q.difficulty||null,value:selected.value??null,correct:selected.correct??null});
+
+  if(q.kind==='adaptive-objective'){
+    const t=assessmentSession.adaptive[q.track],correct=!!selected.correct;t.asked++;if(correct)t.correct++;
+    t.history.push({difficulty:q.difficulty,correct});
+    const direction=correct?1:-1,step=correct?.72:.62;t.ability=clamp(t.ability+direction*step,1,5);
+    scheduleNextAdaptive(q.track);
+  }else{
+    const max=3,ratio=clamp((Number(selected.value)||0)/max,0,1);addEvidence(q.skill,q.kind,ratio,q.kind==='habit'?1.15:1,{id:q.id});
+    if(q.consistencyKey){assessmentSession.consistencySources[q.consistencyKey]={skill:q.skill,ratio};scheduleConsistencyProbe(q.consistencyKey)}
+    if(q.probeFor&&assessmentSession.consistencySources[q.probeFor])assessmentSession.consistencyPairs.push({skill:q.skill,a:assessmentSession.consistencySources[q.probeFor].ratio,b:ratio,key:q.probeFor});
+  }
+  assessmentSession.answered++;nextAssessmentQuestion();
 }
 function finishAssessmentScoring(){
-  // Habilidades no observadas directamente usan el promedio de su atributo con baja confianza.
-  const direct={};allSkills.forEach(s=>direct[s]=conservativeSkillScore(s));
+  // Convertir las pruebas adaptativas en evidencia sólo al final: la dificultad alcanzada importa, no una opción con “78 puntos”.
+  for(const trackName of ['logica','problemas']){
+    const track=objectiveBanks[trackName],score=objectiveTrackScore(trackName),ratio=(score-30)/52;
+    addEvidence(track.skill,'objective-score',ratio,1.65,{score,track:trackName});
+  }
+  const nutritionScore=objectiveTrackScore('nutricion');state.nutritionKnowledge=Math.round(clamp((nutritionScore-30)/52*100,0,100));
+  // Nutrición aporta una señal pequeña a Conocimiento general, sin dominarlo.
+  addEvidence('Conocimiento','objective-score',(nutritionScore-30)/52,.35,{score:Math.round(38+(nutritionScore-30)*.65),track:'nutricion'});
+
+  const direct={};allSkills.forEach(skill=>direct[skill]=assessmentSkillScore(skill));
   Object.entries(skillMap).forEach(([attr,names])=>{
-    const observed=names.filter(n=>(assessmentSession.scores[n]||[]).length);const fallback=observed.length?Math.round(observed.reduce((sum,n)=>sum+direct[n],0)/observed.length):48;
-    names.forEach(n=>{if(!(assessmentSession.scores[n]||[]).length)direct[n]=fallback});
+    const observed=names.filter(n=>direct[n]!==null),fallback=observed.length?Math.round(observed.reduce((s,n)=>s+direct[n],0)/observed.length):45;
+    names.forEach(n=>{if(direct[n]===null)direct[n]=Math.min(58,fallback)});
   });
-  state.baseSkills={...state.baseSkills,...direct};
-  state.skillConfidence={...state.skillConfidence};allSkills.forEach(s=>state.skillConfidence[s]=confidenceFor(s).replace('evaluación ',''));
+  state.baseSkills={...state.baseSkills,...direct};state.skillConfidence={...state.skillConfidence};allSkills.forEach(s=>state.skillConfidence[s]=initialConfidenceFor(s));
   state.strengthAssessment=state.baseSkills['Fuerza'];state.useMeasuredStrength=state.useMeasuredStrength&&measuredStrengthRows().length>0;
-  state.nutritionKnowledge=assessmentSession.nutritionTotal?Math.round(assessmentSession.nutritionCorrect/assessmentSession.nutritionTotal*100):0;
-  state.assessmentComplete=true;state.assessmentCompletedAt=new Date().toISOString();
+  if(state.useMeasuredStrength)state.skillConfidence['Fuerza']=measuredStrengthRows().length>=4?'alta':'media';
+  const consistency=assessmentSession.consistencyPairs.length?Math.round(100-assessmentSession.consistencyPairs.reduce((s,p)=>s+Math.abs(p.a-p.b),0)/assessmentSession.consistencyPairs.length*100):70;
+  state.assessmentEngineVersion=4;state.assessmentComplete=true;state.assessmentCompletedAt=new Date().toISOString();
+  state.assessmentReport={engine:4,questionCount:assessmentSession.answered,consistency:clamp(consistency,0,100),adaptive:{logica:objectiveTrackScore('logica'),problemas:objectiveTrackScore('problemas'),nutricion:nutritionScore},context:state.player.context,completedAt:state.assessmentCompletedAt};
   localStorage.setItem(storeKey,JSON.stringify(state));
   $('#assessmentQuestionStep').classList.add('hidden');$('#assessmentResultStep').classList.remove('hidden');
-  const attrs=effectiveAttributes(),gl=generalLevel();$('#resultGeneral').textContent=gl;$('#resultRank').textContent=rank(gl);$('#resultNutrition').textContent=`${state.nutritionKnowledge}%`;$('#resultConfidence').textContent=`Confianza inicial: ${globalConfidence()}`;
-  $('#resultAttributes').innerHTML=Object.entries(attrs).map(([a,v])=>`<div class="attribute-card"><div class="small">${icons[a]} ${a}</div><div class="score">${v}</div><div class="progress"><span style="width:${v}%"></span></div></div>`).join('');
+  const attrs=effectiveAttributes(),gl=generalLevel();$('#resultGeneral').textContent=gl;$('#resultRank').textContent=rank(gl);$('#resultNutrition').textContent=`${state.nutritionKnowledge}%`;$('#resultConfidence').textContent=`Confianza inicial: ${globalConfidence()} · ${state.assessmentReport.questionCount} preguntas · consistencia ${state.assessmentReport.consistency}%`;
+  $('#resultAttributes').innerHTML=Object.entries(attrs).map(([a,v])=>`<div class="attribute-card"><div class="small">${icons[a]} ${a}</div><div class="score">${v}</div><div class="progress"><span style="width:${v}%"></span></div><div class="confidence">estimación inicial</div></div>`).join('');
 }
 
 let currentLesson=null;
@@ -405,7 +559,7 @@ $('#cancelAssessmentBtn').addEventListener('click',closeAssessment);
 $('#reassessBtn').addEventListener('click',()=>openAssessment(true));
 $('#finishAssessmentBtn').addEventListener('click',()=>{closeAssessment();render()});
 $('#assessmentOptions').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b)recordAssessmentAnswer(+b.dataset.answer)});
-$('#assessmentBackBtn').addEventListener('click',()=>{if(assessmentSession.index<=0)return;const target=assessmentSession.index-1;rebuildAssessmentUntil(target);renderAssessmentQuestion()});
+$('#assessmentBackBtn').addEventListener('click',()=>{});
 
 $('#newTaskCategory').addEventListener('change',updateSkillSelect);
 $('#playerName').addEventListener('change',e=>{state.player.name=e.target.value.trim()||'Jugador';save()});

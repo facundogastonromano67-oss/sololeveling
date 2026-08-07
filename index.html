@@ -13,9 +13,9 @@
   <div id="assessmentOverlay" class="overlay hidden">
     <section class="assessment-card">
       <div id="assessmentProfileStep">
-        <div class="eyebrow">CREACIÓN DE PERSONAJE · V3</div>
+        <div class="eyebrow">CREACIÓN DE PERSONAJE · V4</div>
         <h1>Primero, un poco de contexto</h1>
-        <p class="muted">No vas a elegir tus propios puntajes. La app los estima con preguntas objetivas, situaciones concretas y hábitos. El resultado inicial es provisional y después se calibra con lo que hacés de verdad.</p>
+        <p class="muted">No vas a elegir tus propios puntajes. La evaluación cambia la dificultad según tus respuestas, usa situaciones adaptadas a tu contexto y cruza algunas respuestas para medir consistencia. El resultado inicial es provisional y después se recalibra con evidencia real.</p>
 
         <div class="form-grid">
           <label>Nombre<input id="asName" placeholder="Tu nombre" required /></label>
@@ -46,7 +46,7 @@
 
         <div class="assessment-note">
           <strong>Cómo se puntúa</strong>
-          <span>Una respuesta “perfecta” no te da 100. Los niveles muy altos requieren evidencia real y consistencia con el tiempo.</span>
+          <span>Las opciones no equivalen a un puntaje fijo. En las pruebas objetivas la dificultad sube o baja según cómo respondés; los niveles altos requieren evidencia real y consistencia con el tiempo.</span>
         </div>
         <button id="startAssessmentBtn" class="primary wide big">Empezar evaluación</button>
         <button id="cancelAssessmentBtn" class="ghost wide hidden">Cancelar</button>
@@ -58,13 +58,13 @@
             <div class="eyebrow" id="assessmentCategory">EVALUACIÓN</div>
             <h2 id="assessmentQuestionTitle"></h2>
           </div>
-          <span class="pill"><span id="assessmentIndex">1</span>/<span id="assessmentTotal">30</span></span>
+          <span class="pill"><span id="assessmentIndex">1</span> · adaptativa</span>
         </div>
         <div class="progress"><span id="assessmentProgress"></span></div>
         <p id="assessmentQuestionText" class="question-text"></p>
         <div id="assessmentOptions" class="answer-list"></div>
         <div class="assessment-actions">
-          <button id="assessmentBackBtn" class="ghost">Anterior</button>
+          <button id="assessmentBackBtn" class="ghost hidden">Anterior</button>
         </div>
       </div>
 
