@@ -4,78 +4,104 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="Vida RPG: progreso personal gamificado." />
   <title>Vida RPG</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="onboardingOverlay" class="onboarding-overlay hidden">
-    <section class="onboarding-card">
-      <div class="eyebrow">CREACIÓN DE PERSONAJE</div>
-      <h1>Tu punto de partida</h1>
-      <p class="muted">Respondé según cómo estás hoy. Sirve para crear una base que después se modifica con acciones y métricas reales.</p>
+  <div id="assessmentOverlay" class="overlay hidden">
+    <section class="assessment-card">
+      <div id="assessmentProfileStep">
+        <div class="eyebrow">CREACIÓN DE PERSONAJE · V3</div>
+        <h1>Primero, un poco de contexto</h1>
+        <p class="muted">No vas a elegir tus propios puntajes. La app los estima con preguntas objetivas, situaciones concretas y hábitos. El resultado inicial es provisional y después se calibra con lo que hacés de verdad.</p>
 
-      <form id="onboardingForm">
-        <div class="onboarding-section">
-          <h2>Datos básicos</h2>
-          <div class="form-grid">
-            <label>Nombre<input id="obName" required placeholder="Tu nombre" /></label>
-            <label>Edad<input id="obAge" type="number" min="13" max="100" placeholder="24" /></label>
-            <label>Altura (cm)<input id="obHeight" type="number" min="120" max="230" placeholder="175" /></label>
-            <label>Peso (kg)<input id="obWeight" type="number" min="30" max="250" step="0.1" placeholder="72.5" /></label>
-          </div>
+        <div class="form-grid">
+          <label>Nombre<input id="asName" placeholder="Tu nombre" required /></label>
+          <label>Edad<input id="asAge" type="number" min="13" max="100" placeholder="24" /></label>
+          <label>Altura (cm)<input id="asHeight" type="number" min="120" max="230" placeholder="175" /></label>
+          <label>Peso (kg)<input id="asWeight" type="number" min="30" max="250" step="0.1" placeholder="72.5" /></label>
+          <label>Tu contexto principal
+            <select id="asContext">
+              <option value="trabajo">Trabajo</option>
+              <option value="estudio">Estudio</option>
+              <option value="ambos">Trabajo y estudio</option>
+              <option value="independiente">Trabajo independiente / emprendimiento</option>
+              <option value="busqueda">Buscando trabajo</option>
+              <option value="otro">Otro</option>
+            </select>
+          </label>
+          <label>Objetivo principal
+            <select id="asGoal">
+              <option value="general">Mejorar en general</option>
+              <option value="fisico">Mejorar físico y salud</option>
+              <option value="trabajo">Mejorar rendimiento laboral / estudio</option>
+              <option value="social">Mejorar habilidades sociales</option>
+              <option value="finanzas">Mejorar finanzas personales</option>
+              <option value="nutricion">Aprender y mejorar nutrición</option>
+            </select>
+          </label>
         </div>
 
-        <div class="onboarding-section">
-          <h2>🧠 Intelecto</h2>
-          <div class="rating-grid">
-            <label>Aprender cosas nuevas <span id="vLearning">5</span>/10<input id="obLearning" type="range" min="1" max="10" value="5" /></label>
-            <label>Resolver problemas <span id="vProblem">5</span>/10<input id="obProblem" type="range" min="1" max="10" value="5" /></label>
-            <label>Conocimiento práctico <span id="vKnowledge">5</span>/10<input id="obKnowledge" type="range" min="1" max="10" value="5" /></label>
-            <label>Creatividad <span id="vCreativity">5</span>/10<input id="obCreativity" type="range" min="1" max="10" value="5" /></label>
-          </div>
+        <div class="assessment-note">
+          <strong>Cómo se puntúa</strong>
+          <span>Una respuesta “perfecta” no te da 100. Los niveles muy altos requieren evidencia real y consistencia con el tiempo.</span>
         </div>
+        <button id="startAssessmentBtn" class="primary wide big">Empezar evaluación</button>
+        <button id="cancelAssessmentBtn" class="ghost wide hidden">Cancelar</button>
+      </div>
 
-        <div class="onboarding-section">
-          <h2>✨ Carisma</h2>
-          <div class="rating-grid">
-            <label>Comunicación <span id="vCommunication">5</span>/10<input id="obCommunication" type="range" min="1" max="10" value="5" /></label>
-            <label>Habilidades sociales <span id="vSocial">5</span>/10<input id="obSocial" type="range" min="1" max="10" value="5" /></label>
-            <label>Liderazgo <span id="vLeadership">5</span>/10<input id="obLeadership" type="range" min="1" max="10" value="5" /></label>
-            <label>Control emocional <span id="vEmotional">5</span>/10<input id="obEmotional" type="range" min="1" max="10" value="5" /></label>
-            <label>Integridad / valores <span id="vIntegrity">5</span>/10<input id="obIntegrity" type="range" min="1" max="10" value="5" /></label>
+      <div id="assessmentQuestionStep" class="hidden">
+        <div class="assessment-top">
+          <div>
+            <div class="eyebrow" id="assessmentCategory">EVALUACIÓN</div>
+            <h2 id="assessmentQuestionTitle"></h2>
           </div>
+          <span class="pill"><span id="assessmentIndex">1</span>/<span id="assessmentTotal">30</span></span>
         </div>
-
-        <div class="onboarding-section">
-          <h2>⚡ Rendimiento</h2>
-          <div class="rating-grid">
-            <label>Disciplina <span id="vDiscipline">5</span>/10<input id="obDiscipline" type="range" min="1" max="10" value="5" /></label>
-            <label>Constancia <span id="vConsistency">5</span>/10<input id="obConsistency" type="range" min="1" max="10" value="5" /></label>
-            <label>Organización <span id="vOrganization">5</span>/10<input id="obOrganization" type="range" min="1" max="10" value="5" /></label>
-            <label>Productividad <span id="vProductivity">5</span>/10<input id="obProductivity" type="range" min="1" max="10" value="5" /></label>
-            <label>Finanzas personales <span id="vFinance">5</span>/10<input id="obFinance" type="range" min="1" max="10" value="5" /></label>
-          </div>
+        <div class="progress"><span id="assessmentProgress"></span></div>
+        <p id="assessmentQuestionText" class="question-text"></p>
+        <div id="assessmentOptions" class="answer-list"></div>
+        <div class="assessment-actions">
+          <button id="assessmentBackBtn" class="ghost">Anterior</button>
         </div>
+      </div>
 
-        <div class="onboarding-section">
-          <h2>💪 Físico</h2>
-          <div class="rating-grid">
-            <label>Fuerza <span id="vStrength">5</span>/10<input id="obStrength" type="range" min="1" max="10" value="5" /></label>
-            <label>Resistencia <span id="vEndurance">5</span>/10<input id="obEndurance" type="range" min="1" max="10" value="5" /></label>
-            <label>Velocidad / potencia <span id="vPower">5</span>/10<input id="obPower" type="range" min="1" max="10" value="5" /></label>
-            <label>Movilidad <span id="vMobility">5</span>/10<input id="obMobility" type="range" min="1" max="10" value="5" /></label>
-            <label>Salud general <span id="vHealth">5</span>/10<input id="obHealth" type="range" min="1" max="10" value="5" /></label>
-          </div>
-          <div class="form-grid compact">
-            <label>Sueño promedio (h)<input id="obSleep" type="number" min="0" max="14" step="0.5" value="7" /></label>
-            <label>Entrenamientos por semana<input id="obTrainingDays" type="number" min="0" max="14" value="3" /></label>
-          </div>
+      <div id="assessmentResultStep" class="hidden">
+        <div class="eyebrow">PERSONAJE CREADO</div>
+        <h1>Tu punto de partida</h1>
+        <div class="result-level">
+          <span>Nivel general estimado</span>
+          <strong id="resultGeneral">50</strong>
+          <span id="resultRank" class="pill">Platino</span>
         </div>
+        <div id="resultAttributes" class="attributes-grid"></div>
+        <div class="assessment-note">
+          <strong id="resultConfidence">Confianza inicial: media</strong>
+          <span>Los puntajes se vuelven más confiables a medida que completás tareas, cargás métricas y usás la app.</span>
+        </div>
+        <div class="nutrition-result">
+          <span>Conocimiento inicial de nutrición</span>
+          <strong id="resultNutrition">0%</strong>
+        </div>
+        <button id="finishAssessmentBtn" class="primary wide big">Entrar a Vida RPG</button>
+      </div>
+    </section>
+  </div>
 
-        <button class="primary wide big" type="submit">Crear personaje</button>
-        <button id="cancelOnboarding" class="ghost wide hidden" type="button">Cancelar</button>
-      </form>
+  <div id="lessonOverlay" class="overlay hidden">
+    <section class="lesson-modal">
+      <button id="closeLessonBtn" class="modal-close" aria-label="Cerrar">×</button>
+      <div class="eyebrow" id="lessonCategory"></div>
+      <h1 id="lessonTitle"></h1>
+      <div id="lessonBody" class="lesson-body"></div>
+      <div id="lessonQuiz" class="lesson-quiz">
+        <h3>Chequeo rápido</h3>
+        <p id="lessonQuestion"></p>
+        <div id="lessonAnswers" class="answer-list"></div>
+        <div id="lessonFeedback" class="quiz-feedback"></div>
+      </div>
     </section>
   </div>
 
@@ -91,6 +117,7 @@
     <nav class="quick-nav">
       <a href="#todaySection">Hoy</a>
       <a href="#skillsSection">Habilidades</a>
+      <a href="#academySection">Academia</a>
       <a href="#historySection">Historial</a>
       <a href="#profileSection">Perfil</a>
     </nav>
@@ -109,8 +136,9 @@
           <div class="level-line">Nivel general <strong id="generalLevel">50</strong></div>
           <div class="progress"><span id="generalBar"></span></div>
           <div class="muted" id="profileMeta"></div>
+          <div class="muted" id="assessmentMeta"></div>
           <div class="muted" id="todayLabel"></div>
-          <button id="recalibrateBtn" class="ghost small-btn">Rehacer evaluación inicial</button>
+          <button id="reassessBtn" class="ghost small-btn">Rehacer evaluación inteligente</button>
         </div>
       </section>
 
@@ -118,36 +146,48 @@
 
       <section id="todaySection" class="card">
         <div class="section-head">
-          <div>
-            <div class="eyebrow">HOY</div>
-            <h2>Misiones y tareas</h2>
-          </div>
+          <div><div class="eyebrow">HOY</div><h2>Misiones y tareas</h2></div>
           <div class="xp-badge"><span id="todayXp">0</span> XP</div>
         </div>
-
         <div id="dailyTasks" class="task-list"></div>
 
         <form id="addTaskForm" class="add-task">
           <input id="newTaskText" placeholder="Agregar tarea personal..." required />
-          <select id="newTaskCategory" aria-label="Atributo">
+          <select id="newTaskCategory">
             <option value="Rendimiento">Rendimiento</option>
             <option value="Intelecto">Intelecto</option>
             <option value="Carisma">Carisma</option>
             <option value="Físico">Físico</option>
           </select>
-          <select id="newTaskSkill" aria-label="Habilidad"></select>
-          <input id="newTaskXp" type="number" min="1" max="50" value="2" aria-label="XP" />
+          <select id="newTaskSkill"></select>
+          <input id="newTaskXp" type="number" min="1" max="20" value="2" aria-label="XP" />
           <button type="submit">Agregar</button>
         </form>
       </section>
 
       <section id="skillsSection" class="card section-space">
         <div class="section-head">
-          <div><div class="eyebrow">EXPERIENCIA</div><h2>Habilidades</h2></div>
-          <span class="pill">20 skills</span>
+          <div><div class="eyebrow">EXPERIENCIA</div><h2>20 habilidades</h2></div>
+          <span class="pill">Nivel + confianza</span>
         </div>
-        <p class="note">El XP va a una habilidad concreta. Subir puntos se vuelve más difícil a medida que el nivel es mayor.</p>
+        <p class="note">El XP mejora habilidades concretas. Los puntajes iniciales son estimaciones; las métricas y la conducta real tienen cada vez más peso.</p>
         <div id="skillsGrid" class="skills-grid"></div>
+      </section>
+
+      <section id="academySection" class="card section-space">
+        <div class="section-head">
+          <div><div class="eyebrow">📚 ACADEMIA</div><h2>Aprender también es progresar</h2></div>
+          <div class="xp-badge"><span id="academyCompleted">0</span>/15</div>
+        </div>
+        <p class="note">Leer no da XP por sí solo. Para completar una lección tenés que responder correctamente el chequeo final.</p>
+        <div class="academy-tabs">
+          <button class="academy-tab active" data-academy-filter="all">Todo</button>
+          <button class="academy-tab" data-academy-filter="Nutrición">🥗 Nutrición</button>
+          <button class="academy-tab" data-academy-filter="Entrenamiento">🏋️ Entrenamiento</button>
+          <button class="academy-tab" data-academy-filter="Trabajo">💼 Trabajo</button>
+        </div>
+        <div id="academyGrid" class="academy-grid"></div>
+        <p class="note academy-disclaimer">El contenido de nutrición y entrenamiento es educativo y general. No reemplaza indicaciones médicas o de profesionales que conozcan tu situación particular.</p>
       </section>
 
       <section class="two-col">
@@ -167,13 +207,13 @@
           <label class="setting-row">Hora<input id="reminderTime" type="time" value="21:00" /></label>
           <label class="setting-row">Mensaje<input id="reminderText" value="Completá tu registro de Vida RPG" /></label>
           <button id="enableNotifications" class="primary wide">Activar notificaciones</button>
-          <p class="note">En esta versión, el aviso es confiable mientras la app está abierta o activa. Los push con la app cerrada requerirán backend.</p>
+          <p class="note">Para notificaciones realmente confiables con la app cerrada, más adelante conectaremos un servicio push.</p>
         </section>
       </section>
 
       <section class="card">
         <div class="section-head">
-          <div><div class="eyebrow">FÍSICO</div><h2>Fuerza · seguimiento actual</h2></div>
+          <div><div class="eyebrow">FÍSICO</div><h2>Fuerza · métricas reales</h2></div>
           <div class="xp-badge"><span id="forceScore">0</span>/100</div>
         </div>
         <p id="strengthModeNote" class="note"></p>
@@ -190,10 +230,10 @@
           <div><div class="eyebrow">HISTORIAL</div><h2>Tu progreso en el tiempo</h2></div>
         </div>
         <div class="summary-grid">
-          <div class="summary-card"><span>Últimos 7 días</span><strong id="weekXp">0 XP</strong><small id="weekTasks">0 tareas</small></div>
-          <div class="summary-card"><span>Últimos 30 días</span><strong id="monthXp">0 XP</strong><small id="monthTasks">0 tareas</small></div>
+          <div class="summary-card"><span>Últimos 7 días</span><strong id="weekXp">0 XP</strong><small id="weekTasks">0 acciones</small></div>
+          <div class="summary-card"><span>Últimos 30 días</span><strong id="monthXp">0 XP</strong><small id="monthTasks">0 acciones</small></div>
           <div class="summary-card"><span>Racha actual</span><strong id="streak">0 días</strong><small>actividad diaria</small></div>
-          <div class="summary-card"><span>Mejor racha</span><strong id="bestStreak">0 días</strong><small id="tasksCompleted">0 tareas totales</small></div>
+          <div class="summary-card"><span>Mejor racha</span><strong id="bestStreak">0 días</strong><small id="actionsCompleted">0 acciones totales</small></div>
         </div>
         <div id="historyList" class="history-list"></div>
       </section>
@@ -201,6 +241,12 @@
       <section class="card section-space">
         <div class="section-head"><div><div class="eyebrow">LOGROS</div><h2>Desbloqueos</h2></div></div>
         <div id="achievements" class="achievements"></div>
+      </section>
+
+      <section class="card section-space future-card">
+        <div class="eyebrow">PRÓXIMO MÓDULO</div>
+        <h2>🍽️ Dietario inteligente</h2>
+        <p class="muted">Más adelante usará objetivo, actividad, preferencias, horarios, presupuesto y conocimiento nutricional para ayudar a organizar una alimentación personalizada. No está activado todavía.</p>
       </section>
     </main>
   </div>
