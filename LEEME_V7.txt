@@ -1,0 +1,18 @@
+VIDA RPG V7
+
+NOVEDADES PRINCIPALES
+- Sonido reparado: AudioContext persistente, reanudable y botón global on/off.
+- Plan de mejora de 28 días basado en cuestionario laboral/estudio y tareas reales del usuario.
+- Tareas diarias generadas desde el plan, no desde una lista universal.
+- Penalty Quest por planes aceptados e incompletos, sólo con castigos de juego. Días protegidos.
+- Monedas: recompensas, tienda, llaves de Academia, escudos y temas.
+- Packs de monedas preparados, pero NO acreditan dinero real sin confirmación de backend.
+- Arena: Entrenamiento contra el Sistema y Versus local para dos personas, preguntas con tiempo, Foco y habilidades desbloqueadas por nivel.
+- PvP remoto preparado mediante adaptador/backend; PVP_SETUP.sql incluye un esquema inicial.
+- Temas de color: Eclipse, Abismo, Carmesí y Soberano.
+
+IMPORTANTE
+El PvP entre dos teléfonos, las compras reales de monedas, Premium, anuncios y sincronización real requieren servicios externos configurados. Nunca se simula una compra real desde localStorage.
+
+SUBIDA A GITHUB
+Subir/reemplazar TODOS los archivos de esta carpeta en la raíz del repositorio.
