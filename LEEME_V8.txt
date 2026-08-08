@@ -1,0 +1,14 @@
+VIDA RPG V8
+
+Cambios principales:
+- Navegación superior de escritorio comprimida, sin scrollbar horizontal visible.
+- Móvil: barra flotante conservada sin rediseño.
+- Bienvenida de evaluación cinematográfica con puerta/reino dibujado en CSS y fanfarria procedural original.
+- Evaluación fijada en 35 preguntas específicas, manteniendo dificultad adaptativa y consistencia.
+- Inicio reordenado: Perfil -> Puntajes siempre visibles -> Dieta semanal plegable -> Entrenamiento semanal plegable -> Módulos plegables -> Logros plegables.
+- Estado abierto/cerrado de paneles guardado.
+- Nuevo módulo Entrenamiento con rutina semanal por días, objetivo, nivel y entorno.
+- Migración automática desde vidaRpgStateV7 a vidaRpgStateV8.
+- Service Worker cache vida-rpg-v10.
+
+Subir TODOS los archivos a la raíz del repositorio, reemplazando los existentes y agregando entrenamiento.html y v8.js.
