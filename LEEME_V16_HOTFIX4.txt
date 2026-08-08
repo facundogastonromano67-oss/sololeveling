@@ -1,0 +1,12 @@
+VIDA RPG · G30 V16 · HOTFIX 4
+
+Incluye Hotfix 3 y agrega estabilidad visual del Inicio.
+
+Correcciones:
+- Evaluación: Entrar al primer dominio inicia las 30 preguntas con handler independiente.
+- Mensaje del Sistema: Aceptar misión siempre guarda y cierra el overlay.
+- Inicio: elimina scale() de la transición de página y de la salida cinematográfica.
+- Inicio: fondo visual usa un viewport estable (100lvh cuando está disponible) para evitar el efecto de zoom al cambiar la barra del navegador.
+- Inicio: corrige restauraciones desde bfcache quitando page-exit/transform residuales.
+- Mantiene pinch zoom del usuario; sólo elimina escalas internas de la app.
+- Caché PWA: vida-rpg-v22.

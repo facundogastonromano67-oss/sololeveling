@@ -1,0 +1,11 @@
+VIDA RPG · G30 V16 HOTFIX 3
+
+Corrige dos bloqueos críticos:
+1. Evaluación: ENTRAR AL PRIMER DOMINIO ahora inicia directamente el motor de 30 preguntas, sin depender del listener heredado.
+2. Mensaje del Sistema: ACEPTAR MISIÓN guarda el briefing del día y cierra el overlay de forma forzada, sin re-render que pueda abrirlo de nuevo.
+
+Además:
+- libera cualquier bloqueo de scroll residual al iniciar la evaluación o aceptar el briefing;
+- mantiene las pantallas de cambio de dominio estáticas con click;
+- mantiene V15 físico/inputs, V16 visuales y Arena;
+- cache PWA: vida-rpg-v21.
