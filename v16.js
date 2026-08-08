@@ -50,7 +50,43 @@ function arenaPortraits(){if(pg!=='combat')return;const f=QA('#battleOverlay .fi
 function cinematic({id,image,kicker,title,lines,hint,onClick}){let ov=Q('#'+id);if(ov)return ov;ov=document.createElement('div');ov.id=id;ov.className='v16-cinematic-gate';ov.tabIndex=0;ov.setAttribute('role','button');ov.setAttribute('aria-label',hint||'Continuar');ov.innerHTML=`<img class="v16-cinematic-bg" src="${ROOT+image}" alt=""><div class="v16-cinematic-shade"></div><div class="v16-cinematic-copy"><div class="eyebrow">${kicker}</div><h1>${title}</h1>${lines.map(x=>`<p>${x}</p>`).join('')}<small class="v16-click-hint">${hint}</small></div>`;let fired=false;const go=e=>{if(fired)return;if(e?.target?.closest?.('button,a,input,select,textarea'))return;fired=true;e?.preventDefault?.();onClick?.(ov)};ov.addEventListener('pointerup',go);ov.addEventListener('click',go);ov.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!fired){e.preventDefault();fired=true;onClick?.(ov)}});document.body.appendChild(ov);return ov}
 function homeGate(){if(pg!=='home'||sessionStorage.getItem('vidaRpgHomeGateV16')==='1')return;lockCinematicScroll(true);const ov=cinematic({id:'homeEntryCinematicV16',image:'images/cinematic/home-entry.webp',kicker:'AVISO DEL COLISEO',title:'El Coliseo te reconoce',lines:['Tu punto de partida fue registrado. Tus fortalezas y debilidades ya tienen una referencia.','Ahora empieza la parte que ningún cuestionario puede hacer por vos: actuar.'],hint:'tocá para entrar',onClick:el=>{sessionStorage.setItem('vidaRpgHomeGateV16','1');el.style.pointerEvents='none';el.classList.add('leaving');lockCinematicScroll(false);setTimeout(()=>el.remove(),380)}});setTimeout(()=>ov.focus({preventScroll:true}),50)}
 function transformationGate(){if(pg!=='assessment')return;const b=Q('#finishAssessmentBtn');if(!b)return;b.addEventListener('click',e=>{if(!state.assessmentComplete)return;e.preventDefault();e.stopImmediatePropagation();lockCinematicScroll(true);const ov=cinematic({id:'transformationCinematicV16',image:'images/cinematic/transformation.webp',kicker:'DÍA CERO · AVISO DEL COLISEO',title:'Tu transformación comienza ahora',lines:['Durante los próximos 30 días, cada decisión va a moldear a tu personaje.','El Coliseo no premia intención. Premia acción.'],hint:'tocá para entrar al Coliseo',onClick:el=>{el.style.pointerEvents='none';el.classList.add('leaving');lockCinematicScroll(false);sessionStorage.removeItem('vidaRpgHomeGateV16');setTimeout(()=>location.href='index.html?transformacion=1',350)}});setTimeout(()=>ov.focus({preventScroll:true}),50)},true)}
-function staticDomains(){if(pg!=='assessment')return;const ov=Q('#domainTransition');if(!ov)return;let waiting=false,clicked=false;const card=ov.querySelector('.domain-transition-card');if(card&&!card.querySelector('.v16-click-hint'))card.insertAdjacentHTML('beforeend','<small class="v16-click-hint">tocá para continuar</small>');ov.style.setProperty('--v16-domain-art',`url("${ROOT}images/modules/evaluation.webp")`);document.body.style.setProperty('--v16-assessment-art',`url("${ROOT}images/cinematic/home-entry.webp")`);const activate=()=>{if(!ov.classList.contains('hidden')){waiting=true;clicked=false;lockCinematicScroll(true);ov.classList.add('v16-static-domain');ov.tabIndex=0;setTimeout(()=>ov.focus({preventScroll:true}),30)}};const close=e=>{if(!waiting)return;e?.preventDefault?.();clicked=true;waiting=false;lockCinematicScroll(false);ov.classList.add('hidden')};ov.addEventListener('pointerup',close);ov.addEventListener('click',close);ov.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();close()}});new MutationObserver(()=>{if(!ov.classList.contains('hidden'))activate();else if(waiting&&!clicked)queueMicrotask(()=>{if(waiting&&!clicked)ov.classList.remove('hidden')})}).observe(ov,{attributes:true,attributeFilter:['class']});activate()}
+function staticDomains(){
+ if(pg!=='assessment')return;
+ const ov=Q('#domainTransition');if(!ov)return;
+ const card=ov.querySelector('.domain-transition-card');
+ if(card&&!card.querySelector('.v16-click-hint'))card.insertAdjacentHTML('beforeend','<small class="v16-click-hint">tocá para continuar</small>');
+ ov.style.setProperty('--v16-domain-art',`url("${ROOT}images/modules/evaluation.webp")`);
+ document.body.style.setProperty('--v16-assessment-art',`url("${ROOT}images/cinematic/home-entry.webp")`);
+ ov.classList.add('v16-static-domain');
+ ov.tabIndex=0;
+ let visible=false;
+ const activate=()=>{
+   if(ov.classList.contains('hidden'))return;
+   visible=true;
+   lockCinematicScroll(true);
+ };
+ const close=e=>{
+   if(!visible||ov.classList.contains('hidden'))return;
+   e?.preventDefault?.();
+   visible=false;
+   ov.classList.add('hidden');
+   lockCinematicScroll(false);
+ };
+ // V13 ya no auto-oculta la transición. Este wrapper sólo detecta cuándo
+ // renderAssessmentQuestion la abre y activa el bloqueo de scroll una vez.
+ if(typeof renderAssessmentQuestion==='function'&&!renderAssessmentQuestion.__v16StaticDomain){
+   const oldRender=renderAssessmentQuestion;
+   renderAssessmentQuestion=function(...args){
+     const result=oldRender(...args);
+     if(!ov.classList.contains('hidden'))activate();
+     return result;
+   };
+   renderAssessmentQuestion.__v16StaticDomain=true;
+ }
+ ov.addEventListener('click',close);
+ ov.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();close(e)}});
+ if(!ov.classList.contains('hidden'))activate();
+}
 
 function briefingHotfix(){
  if(pg!=='home')return;

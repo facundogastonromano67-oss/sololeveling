@@ -514,3 +514,71 @@ body[data-page="home"] .v16-cinematic-gate.leaving{transform:none!important}
 body[data-page="home"] .v16-cinematic-bg{inset:0!important;width:100%!important;height:100%!important;transform:none!important}
 body[data-page="home"] .v16-module-hero{contain:layout paint;transform:none!important}
 body[data-page="home"] .v16-module-hero>img{transform:none!important;will-change:auto!important}
+
+
+/* ===== V16 HOTFIX 5 · TEMA OBSIDIANA + CARBÓN ===== */
+:root{
+  --bg:#0A0908;
+  --card:#14110F;
+  --panel:#1C1714;
+  --line:#3A2B20;
+  --text:#F5E9D0;
+  --muted:#B8AB98;
+  --gold:#D4AF37;
+  --green:#7FA36A;
+  --red:#C8645A;
+  --shadow:0 18px 50px rgba(0,0,0,.42);
+}
+html{background:#0A0908}
+body{
+  background:
+    radial-gradient(circle at 50% -8%,rgba(212,175,55,.075),transparent 25%),
+    radial-gradient(circle at 12% 8%,rgba(92,28,24,.12),transparent 27%),
+    linear-gradient(180deg,#0A0908 0%,#14110F 52%,#0B0908 100%)!important;
+  color:var(--text);
+}
+body.visual-v16{background-color:#0A0908!important}
+body.visual-v16::after{
+  background-image:linear-gradient(180deg,rgba(10,9,8,.89),rgba(10,9,8,.97)),var(--v16-page-art)!important;
+}
+.card,.modal,.home-panel,.g30-home-card,.attribute-card,.quick-card,.skill-group,.summary-card,.achievement,
+.system-mission,.diet-day,.meal,.academy-status,.lesson-card,.physical-score-card,.physical-metric-group,
+.v16-practical-strip{
+  background-color:#14110F!important;
+  border-color:rgba(212,175,55,.14)!important;
+}
+.card,.modal,.home-panel,.g30-home-card{
+  background-image:linear-gradient(180deg,rgba(28,23,20,.98),rgba(16,13,11,.98))!important;
+}
+.quick-card,.attribute-card,.skill-group,.lesson-card,.summary-card,.achievement,.system-mission,
+.physical-score-card,.physical-metric-group,.meal{
+  background:#110F0D!important;
+}
+.desktop-nav,.mobile-nav{
+  background:rgba(10,9,8,.93)!important;
+  border-color:rgba(212,175,55,.14)!important;
+}
+.desktop-nav a.active,.mobile-nav a.active{background:#2B2118!important;color:#FFF4D6!important}
+input,select,textarea,.field input,.field select,.field textarea,.answer-btn,
+.add-task input,.add-task select,.setting-row input{
+  background:#0F0D0B!important;
+  border-color:#3A2B20!important;
+  color:#F5E9D0!important;
+}
+.primary{background:linear-gradient(90deg,#9C7426,#D4AF37)!important;color:#120F0A!important;text-shadow:none!important}
+.ghost{background:#1C1714!important;border-color:#493624!important;color:#F5E9D0!important}
+.progress{background:#0C0A09!important}
+.progress span{background:linear-gradient(90deg,#8B6828,#D4AF37)!important}
+.v16-module-hero-shade{
+  background:linear-gradient(90deg,rgba(10,9,8,.94),rgba(20,15,12,.72) 48%,rgba(10,9,8,.18)),linear-gradient(0deg,rgba(10,9,8,.78),transparent 62%)!important;
+}
+.domain-transition.v16-static-domain{
+  background-image:linear-gradient(180deg,rgba(10,9,8,.72),rgba(10,9,8,.94)),var(--v16-domain-art)!important;
+}
+.domain-transition.v16-static-domain .domain-transition-card{
+  background:linear-gradient(180deg,rgba(20,17,15,.88),rgba(10,9,8,.76))!important;
+  border-color:rgba(212,175,55,.18)!important;
+}
+.page-loader{background:#0A0908!important}
+.loader-rune{border-color:rgba(212,175,55,.2)!important;border-top-color:#D4AF37!important;box-shadow:0 0 35px rgba(212,175,55,.12)!important}
+body.visual-v16[data-page="home"]::after{background-color:#0A0908!important}
