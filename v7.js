@@ -32,7 +32,7 @@ function injectHeaderStatus(){if(page==='assessment')return;const top=document.q
 function syncHeaderStatus(){const el=document.querySelector('#headerCoins strong');if(el)el.textContent=state.economy.coins;window.VIDA_SOUND.update();applyTheme()}
 
 // ---------- Themes / color system ----------
-const themeDefs={eclipse:{name:'Eclipse',price:0},abyss:{name:'Abismo',price:90},crimson:{name:'Carmesí',price:120},sovereign:{name:'Soberano',price:140}};
+const themeDefs={eclipse:{name:'Eclipse',price:0},abyss:{name:'Forja',price:90},crimson:{name:'Carmesí',price:120},sovereign:{name:'Soberano',price:140}};
 function applyTheme(){document.body.dataset.theme=state.rpg.theme||'eclipse'}
 function themeOwned(id){return id==='eclipse'||state.economy.ownedThemes.includes(id)}
 

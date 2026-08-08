@@ -11,7 +11,7 @@
     'tareas.html':'✓',
     'academia.html':'✦',
     'progreso.html':'▣',
-    'perfil.html':'👤',
+    'perfil.html':'◆',
     'mas.html':'☰',
     'combate.html':'⚔',
     'dietario.html':'🍽',
@@ -19,7 +19,7 @@
     'recetario.html':'📖',
     'tienda.html':'◈',
     'habilidades.html':'✨',
-    'historial.html':'🕘',
+    'historial.html':'◷',
     'cuenta.html':'⚙',
     'misiones.html':'⚔'
   };

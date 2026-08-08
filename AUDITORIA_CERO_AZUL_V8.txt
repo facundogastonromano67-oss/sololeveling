@@ -1,0 +1,60 @@
+VIDA RPG G30 · AUDITORÍA CERO AZUL · HOTFIX 8
+
+OBJETIVO
+Eliminar de forma literal los tonos azul, cian, turquesa, índigo y violeta visibles de la aplicación, no sólo cambiar las variables finales del tema.
+
+HALLAZGOS EN HOTFIX 7
+1. CSS heredado
+- 95 tokens de color frío/cool seguían presentes en styles.css bajo un criterio amplio de hue frío/teal/violeta.
+- Ejemplos reales: #1e2d62, #0f172a, #0b1423, #111827, #2563eb, #a855f7, #312e81, rgb(148,163,184), tonos menta/turquesa y varios rgba equivalentes.
+- El override final dorado tapaba algunos, pero no todos los selectores y estados.
+
+2. Temas desbloqueables
+- La clave interna "abyss" todavía definía una paleta azul/turquesa.
+- Soberano conservaba un acento violeta.
+- Eclipse tenía superficies navy heredadas.
+
+3. Arena
+- El modal de combate conservaba fondos índigo/violeta y superficies #111827.
+
+4. Estados y controles
+- Success usaba verde menta/turquesa.
+- Varios bordes eran slate azulado.
+- Faltaba controlar de forma global focus-visible, tap highlight y caret para evitar azul nativo del navegador.
+
+5. Imágenes raster WEBP
+- El azul estaba incrustado dentro de imágenes, por lo que un simple cambio CSS no podía eliminarlo.
+- El retrato del gladiador tenía ~13.2% de píxeles dentro de una definición conservadora azul/cian/violeta.
+- Arena ~2.3%, Sistema ~2.1%, Evaluación ~1.4%, Perfil ~1.35%, Progreso ~1.22%.
+- Con un rango de auditoría más amplio que también incluye teal/slate/violeta, había cientos de miles de píxeles fríos repartidos por los assets.
+
+CORRECCIONES HOTFIX 8
+- Se reemplazaron todos los colores fríos heredados por obsidiana, carbón, piedra cálida, bronce, borgoña, dorado, marfil u oliva apagado.
+- "Tema Abismo" pasa visualmente a "Tema Forja" manteniendo la clave interna abyss para no romper partidas guardadas.
+- Arena se rehizo cromáticamente a carbón/bronce/dorado/rojo cálido.
+- Success menta/turquesa pasa a oliva apagado.
+- Focus-visible, tap highlight, caret, selection y accent-color usan dorado.
+- Se procesaron los 23 WEBP píxel por píxel. Todo hue teal/azul/cian/violeta detectado fue remapeado a una familia cálida.
+- Se limpiaron SVG e iconos con el mismo criterio.
+- Se retiraron o sustituyeron emojis claramente propensos a mostrar azul en iOS (ola, nube, globo, brújula y varios iconos de contenido).
+- Clases/IDs internos antiguos como frame-cyan o la clave abyss pueden permanecer por compatibilidad, pero ya no producen color azul.
+
+VALIDACIÓN FINAL
+- Colores fríos detectables en archivos de texto/CSS/SVG bajo el criterio de auditoría: 0.
+- Píxeles fríos detectables en los 23 WEBP bajo el criterio estricto usado para el Hotfix 8: 0.
+- JavaScript: sintaxis OK en todos los archivos.
+- Referencias HTML a assets/scripts: OK.
+- Service Worker: todos los assets resuelven; cache vida-rpg-v26.
+- assessment.html conserva el motor liviano y estable: config.js + app.js + v13.js + assessment-stable.js.
+
+PALETA FINAL
+Obsidiana: #0A0908
+Carbón: #14110F
+Humo cálido: #1C1714
+Bronce: #A06D35 / #8A5A2D
+Borgoña: #5C1F18
+Dorado: #D4AF37
+Dorado claro: #F2D27A
+Marfil: #F5E9D0
+Piedra cálida: #A99D8A
+Oliva de éxito: #87964E

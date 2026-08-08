@@ -5,7 +5,7 @@
 </linearGradient>
 </defs>
 <rect width="1600" height="900" fill="url(#bg)"/>
-<g opacity=".13" fill="#34d399">
+<g opacity=".13" fill="#87964E">
 <circle cx="260" cy="190" r="170"/><circle cx="1320" cy="220" r="140"/>
 </g>
 <g transform="translate(320 180)">

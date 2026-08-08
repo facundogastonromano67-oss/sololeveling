@@ -1,0 +1,14 @@
+VIDA RPG G30 · V16 HOTFIX 8 — CERO AZUL REAL
+
+Auditoría exhaustiva del tema visual.
+- Se eliminaron colores fríos heredados del CSS, no sólo las variables finales.
+- Se calentaron los temas Eclipse, Forja (clave interna abyss), Carmesí y Soberano.
+- Arena dejó de usar fondos índigo/violeta.
+- Bordes slate/gris-azulados se reemplazaron por piedra cálida.
+- Success menta/turquesa pasa a oliva apagado.
+- Tap highlight, foco, caret y selección usan dorado.
+- Se eliminaron referencias visuales/textuales a azul/cian en la tienda.
+- Los WEBP fueron procesados píxel por píxel: teal/azul/cian/violeta -> carbón/bronce/dorado/borgoña/oliva.
+- Se reemplazaron emojis potencialmente azules (ola/nube/globo/brújula) en puntos principales.
+- Assessment estable se conserva sin volver a cargar toda la cadena histórica.
+- Cache PWA: vida-rpg-v26.
