@@ -32,7 +32,30 @@ function cinematic({id,image,kicker,title,lines,hint,onClick}){let ov=Q('#'+id);
 function homeGate(){if(pg!=='home'||sessionStorage.getItem('vidaRpgHomeGateV16')==='1')return;document.body.classList.add('v16-cinematic-open');const ov=cinematic({id:'homeEntryCinematicV16',image:'images/cinematic/home-entry.webp',kicker:'AVISO DEL COLISEO',title:'El Coliseo te reconoce',lines:['Tu punto de partida fue registrado. Tus fortalezas y debilidades ya tienen una referencia.','Ahora empieza la parte que ningún cuestionario puede hacer por vos: actuar.'],hint:'tocá para entrar',onClick:el=>{sessionStorage.setItem('vidaRpgHomeGateV16','1');el.classList.add('leaving');document.body.classList.remove('v16-cinematic-open');setTimeout(()=>el.remove(),380)}});setTimeout(()=>ov.focus({preventScroll:true}),50)}
 function transformationGate(){if(pg!=='assessment')return;const b=Q('#finishAssessmentBtn');if(!b)return;b.addEventListener('click',e=>{if(!state.assessmentComplete)return;e.preventDefault();e.stopImmediatePropagation();document.body.classList.add('v16-cinematic-open');const ov=cinematic({id:'transformationCinematicV16',image:'images/cinematic/transformation.webp',kicker:'DÍA CERO · AVISO DEL COLISEO',title:'Tu transformación comienza ahora',lines:['Durante los próximos 30 días, cada decisión va a moldear a tu personaje.','El Coliseo no premia intención. Premia acción.'],hint:'tocá para entrar al Coliseo',onClick:el=>{el.classList.add('leaving');sessionStorage.removeItem('vidaRpgHomeGateV16');setTimeout(()=>location.href='index.html?transformacion=1',350)}});setTimeout(()=>ov.focus({preventScroll:true}),50)},true)}
 function staticDomains(){if(pg!=='assessment')return;const ov=Q('#domainTransition');if(!ov)return;let waiting=false,clicked=false;const card=ov.querySelector('.domain-transition-card');if(card&&!card.querySelector('.v16-click-hint'))card.insertAdjacentHTML('beforeend','<small class="v16-click-hint">tocá para continuar</small>');ov.style.setProperty('--v16-domain-art',`url("${ROOT}images/modules/evaluation.webp")`);document.body.style.setProperty('--v16-assessment-art',`url("${ROOT}images/cinematic/home-entry.webp")`);const activate=()=>{if(!ov.classList.contains('hidden')){waiting=true;clicked=false;ov.classList.add('v16-static-domain');ov.tabIndex=0;setTimeout(()=>ov.focus({preventScroll:true}),30)}};const close=()=>{if(!waiting)return;clicked=true;waiting=false;ov.classList.add('hidden')};ov.addEventListener('click',close);ov.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();close()}});new MutationObserver(()=>{if(!ov.classList.contains('hidden'))activate();else if(waiting&&!clicked)queueMicrotask(()=>{if(waiting&&!clicked)ov.classList.remove('hidden')})}).observe(ov,{attributes:true,attributeFilter:['class']});activate()}
+
+function briefingHotfix(){
+ if(pg!=='home')return;
+ const btn=Q('#acceptBriefingBtn'),ov=Q('#briefingOverlay');
+ if(!btn||!ov)return;
+ btn.type='button';
+ const accept=e=>{
+   e?.preventDefault?.();e?.stopImmediatePropagation?.();
+   state.rpg=state.rpg||{};state.rpg.briefingSeen=state.rpg.briefingSeen||{};
+   const key=typeof todayKey==='function'?todayKey():new Date().toISOString().slice(0,10);
+   state.rpg.briefingSeen[key]=true;
+   try{if(typeof ensureDailyMissions==='function')ensureDailyMissions()}catch(err){}
+   try{localStorage.setItem(typeof storeKey!=='undefined'?storeKey:'vidaRpgStateV8',JSON.stringify(state))}catch(err){}
+   ov.classList.add('hidden');ov.setAttribute('aria-hidden','true');
+   try{window.VIDA_SOUND?.play?.('click')}catch(err){}
+   try{if(typeof playTone==='function')playTone('click')}catch(err){}
+ };
+ // Captura antes de los listeners heredados. Así el botón sigue funcionando
+ // aunque una versión previa haya dejado un binding incompleto o lance error.
+ document.addEventListener('click',e=>{const hit=e.target?.closest?.('#acceptBriefingBtn');if(hit)accept(e)},true);
+ btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();accept(e)}});
+}
+
 function badges(){QA('.card').forEach((c,i)=>{if(c.classList.contains('v16-badged')||c.closest('#battleOverlay'))return;c.classList.add('v16-badged');if(i%4===0){const s=document.createElement('span');s.className='v16-corner-mark';s.textContent='G30';c.appendChild(s)}})}
-function init(){document.body.classList.add('visual-v16');iconize();addHero();practicalStrip();enrichDynamic();arenaPortraits();staticDomains();transformationGate();homeGate();badges();setTimeout(()=>{iconize();practicalStrip();arenaPortraits();badges()},500)}
+function init(){document.body.classList.add('visual-v16');iconize();addHero();practicalStrip();enrichDynamic();arenaPortraits();staticDomains();transformationGate();briefingHotfix();homeGate();badges();setTimeout(()=>{iconize();practicalStrip();arenaPortraits();badges()},500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

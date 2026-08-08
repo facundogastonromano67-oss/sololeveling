@@ -1,0 +1,6 @@
+VIDA RPG G30 · V16 HOTFIX
+
+- Corrige el botón “Aceptar misión” del Mensaje del Sistema.
+- El click se captura de forma prioritaria y guarda briefingSeen antes de cerrar el overlay.
+- Mantiene toda la V16: visuales, Arena, evaluación G30 y correcciones físicas.
+- Cache PWA actualizado a vida-rpg-v19.
