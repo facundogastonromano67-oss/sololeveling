@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs>
+  <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0%" stop-color="#140d26"/>
+    <stop offset="55%" stop-color="#0a0f1f"/>
+    <stop offset="100%" stop-color="#090611"/>
+  </linearGradient>
+  <radialGradient id="moon" cx="50%" cy="22%" r="22%">
+    <stop offset="0%" stop-color="#f5d58e" stop-opacity="0.95"/>
+    <stop offset="38%" stop-color="#f5d58e" stop-opacity="0.3"/>
+    <stop offset="100%" stop-color="#f5d58e" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="stone" x1="0" x2="1">
+    <stop offset="0%" stop-color="#2a2331"/>
+    <stop offset="55%" stop-color="#413443"/>
+    <stop offset="100%" stop-color="#261f31"/>
+  </linearGradient>
+  <linearGradient id="gate" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0%" stop-color="#0f0b15"/>
+    <stop offset="100%" stop-color="#26121b"/>
+  </linearGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#sky)"/>
+<ellipse cx="800" cy="215" rx="270" ry="150" fill="url(#moon)"/>
+<g opacity=".3" fill="#ffffff">
+  <circle cx="240" cy="130" r="2"/><circle cx="310" cy="250" r="2"/><circle cx="1220" cy="190" r="2"/>
+  <circle cx="1360" cy="120" r="1.5"/><circle cx="1120" cy="110" r="1.5"/><circle cx="980" cy="290" r="1.6"/>
+</g>
+<g opacity=".16" fill="#c084fc">
+  <circle cx="190" cy="690" r="140"/><circle cx="1420" cy="670" r="160"/>
+</g>
+<path d="M0 560C180 520 250 500 430 510s320 85 450 88 230-45 365-53 225 13 355 40v315H0z" fill="#06070f"/>
+<g transform="translate(210 250)">
+  <ellipse cx="600" cy="360" rx="540" ry="190" fill="#0a0911" opacity=".75"/>
+  <g fill="url(#stone)">
+    <path d="M30 420c45-170 160-286 323-345 183-66 408-55 566 15 170 74 270 183 308 330-86-56-186-76-308-75H342c-111 0-221 23-312 75Z"/>
+    <path d="M155 368c48-117 141-198 273-251 155-61 349-69 510-25 138 38 244 112 313 224-90-42-193-56-314-56H412c-93 0-181 17-257 46Z" opacity=".8"/>
+  </g>
+  <g opacity=".95">
+    <rect x="260" y="286" width="686" height="180" rx="42" fill="#15111c" stroke="#59453a" stroke-width="5"/>
+    <rect x="248" y="274" width="710" height="205" rx="52" fill="none" stroke="#b99363" stroke-opacity=".4" stroke-width="4"/>
+    <g fill="url(#gate)">
+      <rect x="292" y="310" width="158" height="130" rx="20"/>
+      <rect x="474" y="310" width="258" height="130" rx="20"/>
+      <rect x="754" y="310" width="158" height="130" rx="20"/>
+    </g>
+    <g fill="#4d3124" opacity=".55">
+      <rect x="292" y="310" width="158" height="130" rx="20"/>
+      <rect x="474" y="310" width="258" height="130" rx="20"/>
+      <rect x="754" y="310" width="158" height="130" rx="20"/>
+    </g>
+  </g>
+  <g>
+    <rect x="103" y="250" width="20" height="220" rx="10" fill="#3d2d27"/>
+    <rect x="1080" y="250" width="20" height="220" rx="10" fill="#3d2d27"/>
+    <ellipse cx="113" cy="250" rx="26" ry="34" fill="#f59e0b" opacity=".9"/>
+    <ellipse cx="1090" cy="250" rx="26" ry="34" fill="#f59e0b" opacity=".9"/>
+    <ellipse cx="113" cy="250" rx="56" ry="66" fill="#f59e0b" opacity=".25"/>
+    <ellipse cx="1090" cy="250" rx="56" ry="66" fill="#f59e0b" opacity=".25"/>
+  </g>
+</g>
+<rect y="720" width="1600" height="180" fill="#06070e"/>
+</svg>
