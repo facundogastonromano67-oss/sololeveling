@@ -1,0 +1,13 @@
+VIDA RPG · G30 V16 — VISUAL ASSETS & IMMERSION
+
+- Hereda V15: Perfil Físico corregido + rueda del mouse sin alterar inputs numéricos.
+- Pantalla cinematográfica estática al entrar a Inicio.
+- Pantalla cinematográfica estática después de COMENZAR MI TRANSFORMACIÓN.
+- Cambios de dominio de la evaluación estáticos hasta click/Enter.
+- Aviso de interacción pequeño: “tocá para continuar”.
+- 23 imágenes WebP integradas: Coliseo, módulos, Arena, Perfil, Progreso, Academia, Recetario, Entrenamiento, comida y ejercicio.
+- 14 iconos SVG propios para navegación y módulos.
+- Recetario con miniaturas visuales; entrenamiento con miniaturas de ejercicios.
+- Arena conserva el combate funcional de V14 y suma retratos/HUD visual.
+- Imágenes optimizadas y lazy loading donde corresponde.
+- Cache PWA: vida-rpg-v18.

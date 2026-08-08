@@ -511,6 +511,7 @@
   function currentTarget(){ return arenaState?.activePlayer===1 ? arenaState.p2 : arenaState.p1; }
 
   function init(){
+    document.body.classList.add('visual-v14');
     safePersist(false);
     syncCoinsEverywhere();
     decorateNav();

@@ -1,0 +1,12 @@
+VIDA RPG · G30 V15
+
+Correcciones principales:
+- Perfil > Físico rediseñado: un solo sistema de métricas reales para Fuerza, Resistencia, Velocidad/Potencia y Movilidad.
+- Actividades: gimnasio, calistenia, cardio, deporte/boxeo, trabajo físico/obra y actividad general.
+- Línea base válida: mínimo 4 métricas, 3 áreas físicas y al menos 1 métrica de Fuerza.
+- Corrección del cálculo de Fuerza: usa la puntuación calibrada de la línea base.
+- La rueda del mouse ya no modifica inputs numéricos mientras intentás scrollear.
+- Repeticiones, rounds, centímetros y niveles usan enteros.
+- Kg y tiempos permiten decimales sólo donde tienen sentido.
+- Conserva Evaluación G30 de 30 preguntas, onboarding, Plan G30, visual overhaul y Arena funcional.
+- Caché PWA: vida-rpg-v17.
