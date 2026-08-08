@@ -1,0 +1,15 @@
+VIDA RPG · G30 V13
+
+Cambios principales:
+- Evaluación reescrita a 30 preguntas exactas: 5 dominios de 6.
+- Preguntas más generales, sin duplicar escenarios de comunicación/consistencia.
+- Contexto incluye trabajo físico, obra, industria, logística, transporte, gastronomía y cuidados.
+- Después de 30/30: línea base física obligatoria, elegida por actividad.
+- Requiere 4 métricas válidas, 3 áreas físicas e incluir Fuerza.
+- Rutina: crear durante onboarding o dejar para después.
+- Alimentación: crear durante onboarding o dejar para después.
+- El Plan G30 se crea/actualiza con el contexto capturado en la evaluación.
+- Mantiene Coliseo, navegación, recetario, bibliotecas amplias, edición de dieta/rutina y música MP3 de G30.
+- Service worker: vida-rpg-v15.
+
+Nota: las referencias físicas son internas y aproximadas; sirven como línea base de seguimiento, no como diagnóstico deportivo o médico.

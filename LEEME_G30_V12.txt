@@ -1,0 +1,14 @@
+VIDA RPG · G30 V12 · COLISEO
+
+Cambios principales:
+- Evaluación con identidad Gladiador/Coliseo, preguntas motivadoras y CTA “Comenzar tu transformación”.
+- Transición cinematográfica al entrar a cada uno de los 4 dominios.
+- Inicio: acceso directo a Perfil completo.
+- Perfil visible en navegación desktop y móvil.
+- Alimentación: 20+ alternativas por tipo de comida en la biblioteca general, incluyendo opciones básicas, económicas, normales y premium; configuración se contrae una vez creada.
+- Entrenamiento: catálogo ampliado a más de 100 ejercicios; editor muestra muchas más opciones compatibles; configuración se contrae una vez creada.
+- Más: lista vertical por prioridad.
+- Evaluación laboral: incluye obra, oficios, fábrica, depósito, campo, gastronomía, transporte, mantenimiento y seguridad.
+- Fuerza / métricas reales: el usuario elige pruebas según gimnasio, calistenia, deporte, trabajo físico o actividad general.
+- Mantiene la música MP3 melódica de G30 y el control de sonido.
+- Service worker: vida-rpg-v14.
