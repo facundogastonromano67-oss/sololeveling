@@ -1,0 +1,9 @@
+Vida RPG G30 V16 · Hotfix 2
+
+- El loader se cierra por DOMContentLoaded y tiene timeout de seguridad; no depende solo de window.load.
+- Pantallas cinematográficas: click, toque/pointer y teclado funcionan.
+- Mientras un aviso cinematográfico está visible, se bloquea el scroll del documento completo.
+- Al continuar, la capa libera eventos inmediatamente y luego se elimina.
+- Cambios de dominio mantienen el comportamiento estático hasta interacción del usuario.
+- Mantiene el hotfix de Aceptar misión.
+- Caché: vida-rpg-v20.
