@@ -1,0 +1,12 @@
+VIDA RPG G30 — HOTFIX 6
+
+Corrección estructural para Safari/iPhone:
+- assessment.html queda aislado del stack histórico v6-v18.
+- Carga sólo config.js + app.js + v13.js + assessment-stable.js.
+- Un único controlador para iniciar 30 preguntas y transiciones de dominio.
+- Sin AudioContext ni módulos de Arena/Home/Tienda dentro de assessment.
+- Evita serializar todo el estado al tocar “Entrar al primer dominio”.
+- Recupera nombre/edad/altura/peso/contexto/objetivo si WebKit recarga.
+- Mantiene línea base física, rutina/dieta opcional y final cinematográfico.
+- Tema Obsidiana/Carbón conservado.
+- Cache PWA: vida-rpg-v24.

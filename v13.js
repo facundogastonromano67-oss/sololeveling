@@ -3,7 +3,6 @@ state.version=13;
 state.g30Onboarding=state.g30Onboarding||{physicalComplete:false,trainingStatus:'pending',dietStatus:'pending'};
 state.assessmentWorkContext=state.assessmentWorkContext||{};
 state.assessmentLifestyle=state.assessmentLifestyle||{};
-try{localStorage.setItem(storeKey,JSON.stringify(state))}catch(e){}
 if(page!=='assessment')return;
 
 const V13_TARGET=30;
@@ -70,7 +69,7 @@ let lastDomain=null;
 renderAssessmentQuestion=function(){const question=assessmentSession.current;if(!question)return;const kind=question.kind==='adaptive-objective'?'PRUEBA ADAPTATIVA':question.kind==='context'?'CONTEXTO':'EVIDENCIA';$('#assessmentSectionTitle').textContent=question.section;$('#assessmentSectionProgress').textContent=`${question.sectionIndex}/${question.sectionTotal}`;$('#assessmentSectionStrip').dataset.section=question.sectionKey;$('#assessmentCategory').textContent=`DOMINIO ${question.sectionNumber} DE 5 · ${kind}`;$('#assessmentQuestionTitle').textContent=question.title;$('#assessmentQuestionText').textContent=question.text;$('#assessmentIndex').textContent=`${assessmentSession.answered+1}/${V13_TARGET}`;$('#assessmentProgress').style.width=`${Math.min(100,assessmentSession.answered/V13_TARGET*100)}%`;$('#assessmentOptions').innerHTML=question.options.map((o,i)=>`<button class="answer-btn" data-answer="${i}">${escapeHtml(o.label)}</button>`).join('');if(question.sectionKey!==lastDomain){lastDomain=question.sectionKey;const meta=V13_SECTIONS.find(s=>s.key===question.sectionKey);const ov=$('#domainTransition');if(meta&&ov){$('#domainTransitionNumber').textContent=meta.n;$('#domainTransitionTitle').textContent=meta.name;$('#domainTransitionText').textContent=meta.text;ov.classList.remove('hidden');window.VIDA_SOUND?.play?.('level')}}};
 
 const recordBeforeV13=recordAssessment;
-recordAssessment=function(i){const question=assessmentSession.current,opt=question?.options?.[i];if(opt?.capture){const target=opt.capture.target==='life'?state.assessmentLifestyle:state.assessmentWorkContext;target[opt.capture.field]=structuredClone(opt.capture.value);try{localStorage.setItem(storeKey,JSON.stringify(state))}catch(e){}}return recordBeforeV13(i)};
+recordAssessment=function(i){const question=assessmentSession.current,opt=question?.options?.[i];if(opt?.capture){const target=opt.capture.target==='life'?state.assessmentLifestyle:state.assessmentWorkContext;target[opt.capture.field]=structuredClone(opt.capture.value);try{localStorage.setItem('vidaRpgAssessmentContextV13',JSON.stringify({work:state.assessmentWorkContext,life:state.assessmentLifestyle}))}catch(e){}}return recordBeforeV13(i)};
 
 nextAssessment=function(){if(assessmentSession.answered>=V13_TARGET||!assessmentSession.queue.length)return finishAssessment();assessmentSession.current=materialize(assessmentSession.queue.shift());renderAssessmentQuestion()};
 
