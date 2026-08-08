@@ -1,0 +1,12 @@
+VIDA RPG V10
+
+Cambios principales:
+- Corrige el saldo grande de Tienda: se sincroniza inmediatamente con el saldo superior.
+- Corrige la Evaluación en PC: ahora permite scroll vertical y deja accesibles los botones aunque la ventana tenga poca altura o barra de tareas.
+- Amplía el contenido de las 15 lecciones de Academia.
+- En cada lección, el examen básico permanece oculto hasta tocar “Entrar al examen básico”.
+- Reemplaza el drone/zumbido V9 por una pieza musical original de ~59 segundos que se reproduce en loop.
+- La música conserva aproximadamente la posición al navegar entre páginas y respeta el botón global de sonido.
+- Service worker: vida-rpg-v12.
+
+La música es original/procedural y no utiliza material musical externo.

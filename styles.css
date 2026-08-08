@@ -132,3 +132,41 @@ body[data-theme="sovereign"]{--bg:#090804;--card:#17140a;--panel:#211c0d;--line:
   .assessment-section-strip{margin-top:0;padding:9px 10px}.assessment-section-strip strong{font-size:14px}
   .realm-moon{width:210px;height:210px}
 }
+
+/* ========================= V10 · FIXES DE USABILIDAD ========================= */
+/* La evaluación debe poder desplazarse en pantallas de escritorio bajas o con barra de tareas. */
+.assessment-page{overflow-x:hidden!important;overflow-y:auto!important;min-height:100dvh}
+.assessment-page .cinematic{min-height:100dvh;height:auto!important;padding:72px 20px 96px;align-content:center;overflow:visible}
+.assessment-page .realm-intro{min-height:max(100dvh,760px)}
+.assessment-page .realm-copy{padding-bottom:24px}
+.assessment-page #assessmentWrap{min-height:100dvh;padding-bottom:100px}
+@media(max-height:820px) and (min-width:700px){
+  .assessment-page .cinematic{place-items:start center;padding-top:46px;padding-bottom:110px}
+  .assessment-page .realm-copy{margin:auto}
+  .assessment-page .rpg-title{font-size:clamp(34px,6vw,58px)}
+  .assessment-page .assessment-35{margin-top:12px;margin-bottom:9px}
+  .assessment-page .cinematic-copy{margin-top:10px;margin-bottom:14px}
+}
+
+/* Academia: la lectura queda limpia y el examen aparece sólo cuando el usuario decide rendirlo. */
+.lesson-deepening-v10{margin-top:20px;padding-top:16px;border-top:1px solid rgba(148,163,184,.14)}
+.lesson-deepening-v10 h3{margin:0 0 10px;color:#c4b5fd;font-size:16px}
+.lesson-deepening-v10 p{line-height:1.72;color:#d8e4f5}
+.lesson-exam-entry{display:flex;margin:20px 0 4px auto;padding:11px 16px}
+.lesson-quiz{margin-top:18px;padding-top:18px;border-top:1px solid rgba(148,163,184,.14)}
+
+/* El saldo grande debe cambiar visualmente sin esperar un nuevo render de página. */
+#storeCoins{font-variant-numeric:tabular-nums;transition:transform .15s ease}
+
+
+/* ========================= G30 / V11 ========================= */
+@media(min-width:901px){.app-shell{max-width:1180px}.topbar{gap:8px;margin-bottom:10px}.desktop-nav{gap:3px;padding:4px;overflow:visible}.desktop-nav a{font-size:10px;padding:6px 9px}.brand-mark{width:32px;height:32px}.brand h1{font-size:17px}.brand .eyebrow{font-size:8px}}
+.mobile-nav{width:min(92%,520px);padding:5px 6px;gap:3px;border-radius:16px}.mobile-nav a{padding:5px 2px;font-size:9px}.mobile-nav a span{font-size:16px;margin-bottom:1px}
+.g30-home-card{border-color:rgba(139,92,246,.44);background:radial-gradient(circle at 88% 5%,rgba(139,92,246,.18),transparent 36%),linear-gradient(180deg,rgba(21,30,52,.98),rgba(10,16,30,.98));padding:20px}.g30-home-head{display:flex;justify-content:space-between;gap:18px;align-items:center}.g30-home-head h2{font-size:26px}.g30-day-orb{width:92px;height:92px;display:grid;place-items:center;align-content:center;border-radius:50%;border:1px solid rgba(167,139,250,.5);background:radial-gradient(circle,rgba(124,58,237,.22),rgba(8,13,26,.92));box-shadow:0 0 34px rgba(124,58,237,.15)}.g30-day-orb span,.g30-day-orb small{font-size:9px;letter-spacing:.12em;color:#c4b5fd}.g30-day-orb strong{font-size:34px;line-height:1}.g30-progress{height:8px;margin:13px 0}.g30-fronts{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.g30-front{display:flex;gap:9px;align-items:flex-start;background:#0a1222;border:1px solid rgba(148,163,184,.13);border-radius:14px;padding:11px}.g30-front>span{font-size:20px}.g30-front strong,.g30-front small{display:block}.g30-front small{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.35}.g30-main-action{display:inline-flex;text-decoration:none;margin-top:12px;padding:10px 15px}.g30-pillars{margin-top:12px}
+.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.system-module{display:flex;gap:12px;text-decoration:none;background:linear-gradient(180deg,#0e1729,#0a1220);border:1px solid var(--line);border-radius:16px;padding:15px;min-height:100px;align-items:flex-start}.system-module>span{font-size:25px}.system-module strong,.system-module small{display:block}.system-module small{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.45}.system-module:hover{border-color:rgba(34,211,238,.4);transform:translateY(-1px)}
+.mission-actions{display:grid;gap:5px;justify-items:end}.mission-replace{font-size:9px;padding:5px 7px;white-space:nowrap}
+.editable-exercise{grid-template-columns:25px 1fr auto}.tiny-action{padding:6px 8px!important;font-size:9px!important;width:auto!important}.meal-edit-actions{margin-top:8px}.editable-meal{position:relative}.diet-library-note{margin-top:12px}
+.recipe-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.recipe-search{min-width:230px;background:#0a1120;color:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 11px}.recipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.recipe-card{background:#0b1322;border:1px solid var(--line);border-radius:16px;padding:14px}.recipe-card.locked{background:linear-gradient(180deg,rgba(55,37,16,.25),#0b1322)}.recipe-card-top{display:flex;justify-content:space-between;align-items:center}.recipe-card-top>span:first-child{font-size:23px}.recipe-card h3{font-size:14px;margin:10px 0 5px}.recipe-columns{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px}.recipe-columns li{margin:8px 0;color:#dbeafe;line-height:1.45}.shop-link{display:flex;text-decoration:none;justify-content:center;margin-top:8px}
+.assessment-page{overflow-y:auto!important;min-height:100dvh}.assessment-page .cinematic{min-height:100dvh;height:auto!important;overflow:visible!important;padding-bottom:90px}.assessment-page .cinematic-inner{padding-bottom:55px}.assessment-page #assessmentWrap{min-height:100dvh;padding-bottom:90px}.assessment-page .assessment-card{margin-bottom:70px}
+@media(max-width:900px){.g30-fronts{grid-template-columns:1fr 1fr}.more-grid,.recipe-grid{grid-template-columns:1fr 1fr}.recipe-columns{grid-template-columns:1fr}}
+@media(max-width:560px){.g30-home-head{align-items:flex-start}.g30-home-head h2{font-size:21px}.g30-day-orb{width:70px;height:70px}.g30-day-orb strong{font-size:27px}.g30-fronts,.more-grid,.recipe-grid{grid-template-columns:1fr}.recipe-search{width:100%;min-width:0}.g30-home-card{padding:15px}}

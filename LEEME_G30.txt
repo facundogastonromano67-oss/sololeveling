@@ -1,0 +1,14 @@
+VIDA RPG · PLAN G30
+
+Cambio de eje: Plan G30 de 30 días.
+- Inicio prioriza G30 y sus 4 frentes.
+- Misiones combinatorias con muchas variantes y botón “No aplica”.
+- Alimentación editable con base ampliada y reemplazos.
+- Entrenamiento editable con biblioteca amplia de ejercicios.
+- Recetario integrado a Academia y desbloqueos con monedas.
+- Navegación compacta: Inicio / G30 / Hoy / Academia / Progreso / Más (desktop) y Inicio / G30 / Hoy / Arena / Más (mobile).
+- “Más” abre una pantalla completa de módulos.
+- Música original melódica en MP3; sin drone/zumbido continuo.
+- Mantiene las correcciones V10 de saldo de Tienda, scroll de evaluación y exámenes de Academia bajo demanda.
+
+Nota: compras reales de monedas y PvP remoto siguen requiriendo backend/proveedor externo.
