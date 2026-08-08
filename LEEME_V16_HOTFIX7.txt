@@ -1,0 +1,10 @@
+VIDA RPG G30 · V16 HOTFIX 7 — PURGA TOTAL DEL AZUL
+
+- Tema visual: obsidiana + carbón + bronce + borgoña + dorado + marfil.
+- Sin azul/cian/violeta visible en UI.
+- Botones, foco, progreso, navegación, badges y cards recoloreados.
+- SVG e iconos PWA recoloreados.
+- Ilustraciones de módulos/cinemáticas reciben tratamiento cálido para neutralizar tonos fríos.
+- "Nexo cian" pasa a "Nexo bronce".
+- Conserva Assessment estable del Hotfix 6.
+- Service worker: vida-rpg-v25.
