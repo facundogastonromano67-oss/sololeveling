@@ -1,0 +1,12 @@
+VIDA RPG V9
+
+Cambios principales:
+- Inicio pulido: botones compactos y separación uniforme entre módulos.
+- Evaluación de 35 preguntas en 4 bloques: Trabajo y contexto, Actividad y nutrición, Intelecto, Carisma y rendimiento.
+- Preguntas y escenarios reescritos; Integridad usa ahora un caso claro de cobro/pago erróneo.
+- La evaluación de trabajo guarda contexto para prellenar el Plan de mejora.
+- Música ambiental procedural en toda la app, controlada por el mismo botón de sonido.
+- Fondo de bienvenida más épico y profundo.
+- Saldos de monedas sincronizados entre barra superior y Tienda.
+- Avisos importantes con acento rojo/naranja.
+- Service worker cache: vida-rpg-v11.
