@@ -1,0 +1,19 @@
+V30 · Corrección real de Entrenamiento
+
+Reemplazar:
+- entrenamiento.html
+- v20.js
+- styles.css
+- sw.js
+
+CORRECCIONES
+- Se elimina el parche V29 que buscaba la clase incorrecta .v20-ex-card.
+- La imagen/ilustración ahora se genera directamente dentro de exerciseCard().
+- Cada ejercicio tiene ilustración vectorial específica por tipo.
+- Cada ejercicio tiene descripción técnica y frase motivacional.
+- Ejercicios colapsados también muestran miniatura.
+- '+ Agregar serie' queda separado del descanso.
+- El descanso arranca exactamente en el borde de KG y termina en el borde de HECHA:
+  margen 164 px + ancho 464 px.
+- Botón: 'Iniciar descanso entre series · 2:30'.
+- Caché: vida-rpg-v40.

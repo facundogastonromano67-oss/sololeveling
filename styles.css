@@ -1013,3 +1013,112 @@ body[data-page="training"] .v20-rest-btn.v28-rest-wide::after{
     font-size:15px;
   }
 }
+
+
+/* V30 · Entrenamiento: imagen real en card + descanso alineado */
+body[data-page="training"] .v30-ex-body{
+ display:grid;
+ grid-template-columns:628px minmax(300px,1fr);
+ gap:24px;
+ align-items:start;
+ margin-top:10px;
+}
+body[data-page="training"] .v30-ex-work{width:628px;min-width:628px}
+body[data-page="training"] .v20-coach-tip{width:628px;box-sizing:border-box}
+body[data-page="training"] .v20-set-table{width:628px!important;max-width:628px!important;overflow:visible!important}
+body[data-page="training"] .v20-set-row{
+ display:grid!important;
+ grid-template-columns:48px 96px 150px 130px 110px 44px!important;
+ width:628px!important;min-width:628px!important;max-width:628px!important;
+ gap:10px!important;align-items:center!important;justify-content:start!important
+}
+body[data-page="training"] .v20-set-row input[data-field="weight"]{width:150px!important;min-width:150px!important;max-width:150px!important}
+body[data-page="training"] .v20-set-row input[data-field="reps"]{width:130px!important;min-width:130px!important;max-width:130px!important}
+body[data-page="training"] .v20-set-row input[data-field="rpe"]{width:110px!important;min-width:110px!important;max-width:110px!important}
+body[data-page="training"] .v20-set-row input{height:42px!important;min-height:42px!important;padding:7px 8px!important;font-size:16px!important;text-align:center!important}
+body[data-page="training"] .v30-add-row{margin-top:9px;width:628px}
+body[data-page="training"] .v30-rest-row{
+ margin-left:164px;
+ width:464px;
+ margin-top:8px
+}
+body[data-page="training"] .v30-rest-row .v20-rest-btn{
+ display:block;
+ width:464px!important;min-width:464px!important;max-width:464px!important;
+ height:44px;min-height:44px!important;
+ padding:0 16px!important;
+ border-radius:11px;
+ text-align:center!important;
+ white-space:nowrap!important;
+ font-size:14px!important;
+ font-weight:900!important;
+ letter-spacing:.01em;
+ line-height:44px!important
+}
+body[data-page="training"] .v30-rest-row .v20-rest-btn::after{content:none!important}
+body[data-page="training"] .v30-ex-guide{
+ min-height:292px;
+ border:1px solid rgba(212,175,55,.18);
+ background:linear-gradient(180deg,#15110E,#0E0B09);
+ border-radius:18px;
+ padding:12px;
+ overflow:hidden
+}
+body[data-page="training"] .v30-guide-svg{
+ display:block;width:100%;height:190px;
+ border-radius:14px;
+ border:1px solid rgba(212,175,55,.16);
+ background:#0D0A08
+}
+body[data-page="training"] .v30-guide-copy{padding:12px 5px 4px}
+body[data-page="training"] .v30-guide-copy>span{
+ display:inline-flex;
+ padding:5px 9px;border-radius:999px;
+ color:#F2D27A;background:rgba(212,175,55,.08);
+ border:1px solid rgba(212,175,55,.18);
+ font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase
+}
+body[data-page="training"] .v30-guide-copy p{
+ margin:9px 0 0;color:#E7D6B7;font-size:14px;line-height:1.5
+}
+body[data-page="training"] .v30-guide-copy blockquote{
+ margin:11px 0 0;padding:9px 11px;
+ border-left:3px solid #D4AF37;
+ background:#18120D;border-radius:0 10px 10px 0;
+ color:#CDBB9D;font-size:13px;line-height:1.42;font-weight:700
+}
+body[data-page="training"] .v20-ex-mini{
+ grid-template-columns:72px 1fr auto!important;
+ gap:12px!important
+}
+body[data-page="training"] .v30-mini-visual{
+ width:72px;height:54px;border-radius:10px;overflow:hidden;
+ border:1px solid rgba(212,175,55,.16)
+}
+body[data-page="training"] .v30-guide-svg.small{width:72px;height:54px}
+body[data-page="training"] .v30-mini-copy{min-width:0}
+@media(max-width:1050px) and (min-width:761px){
+ body[data-page="training"] .v30-ex-body{grid-template-columns:628px}
+ body[data-page="training"] .v30-ex-guide{width:628px;box-sizing:border-box}
+ body[data-page="training"] .v30-guide-svg{height:230px}
+}
+@media(max-width:760px){
+ body[data-page="training"] .v30-ex-body{display:block;margin-top:8px}
+ body[data-page="training"] .v30-ex-work,
+ body[data-page="training"] .v20-coach-tip,
+ body[data-page="training"] .v20-set-table{width:100%!important;min-width:0!important;max-width:none!important}
+ body[data-page="training"] .v20-set-row{
+  grid-template-columns:30px 56px minmax(58px,78px) minmax(54px,72px) minmax(54px,68px) 40px!important;
+  width:max-content!important;min-width:0!important;max-width:none!important;gap:4px!important
+ }
+ body[data-page="training"] .v20-set-row input[data-field="weight"],
+ body[data-page="training"] .v20-set-row input[data-field="reps"],
+ body[data-page="training"] .v20-set-row input[data-field="rpe"]{width:100%!important;min-width:0!important;max-width:none!important}
+ body[data-page="training"] .v30-add-row{width:100%}
+ body[data-page="training"] .v30-rest-row{margin-left:0;width:100%}
+ body[data-page="training"] .v30-rest-row .v20-rest-btn{width:100%!important;min-width:0!important;max-width:none!important;white-space:normal!important;line-height:1.25!important;height:auto;min-height:46px!important;padding:10px 12px!important}
+ body[data-page="training"] .v30-ex-guide{margin-top:12px}
+ body[data-page="training"] .v30-guide-svg{height:180px}
+ body[data-page="training"] .v20-ex-mini{grid-template-columns:58px 1fr auto!important}
+ body[data-page="training"] .v30-mini-visual,.v30-guide-svg.small{width:58px;height:46px}
+}
