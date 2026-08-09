@@ -1,0 +1,53 @@
+VIDA RPG · G30 · V19 — REORGANIZACIÓN FUNCIONAL
+
+Navegación principal:
+1. General
+2. Entrenamiento
+3. Nutrición
+4. Academia
+5. Más
+
+GENERAL
+- Estadísticas del personaje y puntajes siempre visibles.
+- Plan G30 mostrado como eje del Inicio; ya no se usa como pantalla de generación.
+- Misiones del Sistema integradas en General.
+- Tareas personales integradas en General y se pueden agregar sin salir de la pantalla.
+- Se ocultan los duplicados viejos de Dieta/Rutina/Módulos en Inicio.
+
+ENTRENAMIENTO
+- Selector de día semanal.
+- Rutina correspondiente a cada día.
+- Cuaderno por ejercicio.
+- Registro por serie: repeticiones, peso y RPE.
+- Posibilidad de agregar series.
+- Notas de sesión.
+- El entrenador muestra la referencia de la sesión anterior cuando existe.
+- Las sesiones quedan guardadas en trainingDetailedLogs.
+- Progreso muestra las últimas sesiones registradas.
+
+NUTRICIÓN
+- Nueva pantalla nutricion.html.
+- Une Dietario + preparación/recetas en una sola experiencia.
+- Selector de día del plan.
+- Comidas del día con calorías y macros.
+- Reemplazo de comida.
+- Receta desplegable debajo de cada comida.
+- Preparación ampliada con instrucciones prácticas para pollo, carne, arroz, papa/batata, pasta y huevos.
+- Conserva la configuración y seguimiento nutricional existentes.
+
+ACADEMIA
+- Permanece como pantalla principal de aprendizaje.
+
+MÁS
+- Lista vertical con Perfil, Progreso, Historial, Habilidades, Arena, Tienda y Cuenta.
+- Plan G30, Dietario y Misiones dejan de ser destinos principales porque sus funciones están integradas.
+
+EVALUACIÓN / COLISEO
+- Conserva assessment.html estable y liviano.
+- El Plan G30 se genera desde el flujo del Coliseo.
+
+VISUAL
+- Mantiene el tema Cero Azul Real: obsidiana, carbón, bronce, borgoña, dorado y marfil.
+
+PWA
+- Caché: vida-rpg-v27
