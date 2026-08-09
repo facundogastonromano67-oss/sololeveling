@@ -837,3 +837,84 @@ body[data-page="training"] .v20-rest-btn::after{
     max-width:100%;
   }
 }
+
+
+/* V26 · Inputs de entrenamiento realmente compactos */
+body[data-page="training"] .v20-set-table{
+  width:auto !important;
+  max-width:none !important;
+  overflow-x:auto;
+}
+body[data-page="training"] .v20-set-row{
+  display:grid !important;
+  grid-template-columns: 46px 82px 84px 76px 70px 42px !important;
+  justify-content:start !important;
+  align-items:center;
+  gap:6px !important;
+  width:max-content !important;
+  min-width:0 !important;
+}
+body[data-page="training"] .v20-set-row input{
+  width:84px !important;
+  min-width:84px !important;
+  max-width:84px !important;
+  box-sizing:border-box !important;
+  padding:6px 7px !important;
+  min-height:36px !important;
+  font-size:14px !important;
+  text-align:center;
+}
+body[data-page="training"] .v20-set-row input[data-field="reps"]{
+  width:76px !important;
+  min-width:76px !important;
+  max-width:76px !important;
+}
+body[data-page="training"] .v20-set-row input[data-field="rpe"]{
+  width:70px !important;
+  min-width:70px !important;
+  max-width:70px !important;
+}
+body[data-page="training"] .v20-prev-set{
+  width:82px !important;
+  min-width:82px !important;
+  max-width:82px !important;
+}
+body[data-page="training"] .v20-set-check{
+  width:36px !important;
+  min-width:36px !important;
+  height:36px !important;
+}
+@media(max-width:760px){
+  body[data-page="training"] .v20-set-row{
+    grid-template-columns: 30px 56px 62px 58px 56px 36px !important;
+    gap:4px !important;
+  }
+  body[data-page="training"] .v20-set-row input{
+    width:62px !important;
+    min-width:62px !important;
+    max-width:62px !important;
+    padding:6px 4px !important;
+    font-size:13px !important;
+  }
+  body[data-page="training"] .v20-set-row input[data-field="reps"]{
+    width:58px !important;
+    min-width:58px !important;
+    max-width:58px !important;
+  }
+  body[data-page="training"] .v20-set-row input[data-field="rpe"]{
+    width:56px !important;
+    min-width:56px !important;
+    max-width:56px !important;
+  }
+  body[data-page="training"] .v20-prev-set{
+    width:56px !important;
+    min-width:56px !important;
+    max-width:56px !important;
+    font-size:9px !important;
+  }
+  body[data-page="training"] .v20-set-check{
+    width:34px !important;
+    min-width:34px !important;
+    height:34px !important;
+  }
+}

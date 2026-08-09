@@ -1,0 +1,11 @@
+V26 · Inputs de entrenamiento chicos
+Reemplazar solamente:
+- styles.css
+- sw.js
+
+Cambios:
+- Kg: 84px desktop / 62px móvil
+- Reps: 76px desktop / 58px móvil
+- RPE: 70px desktop / 56px móvil
+- Grilla deja de estirar los inputs.
+- Caché PWA: vida-rpg-v36.
