@@ -1,0 +1,138 @@
+VIDA RPG · G30 V23 — PROGRAMA PROGRESIVO + ASISTENTE DEL SISTEMA
+=================================================================
+
+OBJETIVO
+--------
+Las 3 Misiones del Sistema pasan a ser las 3 PRIORIDADES adaptativas del día.
+Ya no representan todo el programa diario.
+
+Se agrega una segunda capa: HÁBITOS G30 PROGRESIVOS, que son acciones fijas y
+personalizables con progresión gradual.
+
+HÁBITOS BASE INCLUIDOS
+----------------------
+1. Sueño (horas)
+2. Agua (litros)
+3. Movimiento (minutos)
+4. Comidas del plan (cantidad)
+5. Bloque de foco (minutos)
+6. Aprendizaje (minutos)
+7. Comunicación intencional (dificultad progresiva por etapa)
+
+Cada hábito se puede activar/desactivar o modificar mediante el Asistente.
+También se pueden agregar hábitos personalizados.
+
+PROGRESIÓN
+----------
+Cada hábito tiene:
+- punto de partida (baseline)
+- meta final (target)
+- incremento semanal (step)
+- fecha de inicio propia
+
+Ejemplo:
+Sueño: baseline 4 h, target 8 h, step 0.5 h.
+Semana 1: 4 h
+Semana 2: 4.5 h
+Semana 3: 5 h
+...
+La progresión continúa hasta la meta final; no obliga a saltos grandes para
+forzar que todo termine dentro de los 30 días.
+
+El sueño intenta usar como baseline el promedio de registros recientes cuando
+existen. Las metas de salud/hidratación son editables por el usuario y no deben
+interpretarse como prescripción médica.
+
+RECOMPENSAS
+-----------
+Ahora una marca del Camino se obtiene por:
+- 1 Misión del Sistema completada
+- 1 tarea personal completada
+- 1 Hábito G30 cumplido
+
+Se amplió el recorrido porque ahora hay muchas más acciones posibles:
+5 / 15 / 30 / 50 / 80 / 120 / 165 / 215 / 270 marcas.
+
+Los hitos incluyen monedas, XP y Cofres de Arena.
+
+Las misiones semanales agregan una meta de 20 hábitos G30.
+Las mensuales agregan una meta de 100 hábitos G30.
+
+ASISTENTE DEL SISTEMA
+---------------------
+Se agrega un botón flotante "Asistente" en las pantallas que cargan v20.js y
+también en Arena.
+
+El motor local puede ejecutar órdenes concretas sin servidor, por ejemplo:
+- "Duermo 4 horas y quiero llegar a 8"
+- "Quiero dormir 7 horas"
+- "Quiero tomar 2 litros de agua"
+- "Quiero 45 minutos de foco"
+- "Quiero estudiar 30 minutos"
+- "Entrenar 4 días"
+- "Que la rutina dure 45 minutos"
+- "No quiero hacer sentadilla"
+- "No me gusta el pollo"
+- "Quiero 3 comidas"
+- "Recalibrá las misiones hacia finanzas"
+- "Agregame una tarea para hoy: llamar al proveedor"
+- "Agregame un hábito de meditar 5 minutos y que suba 5 por semana hasta 20"
+
+IA GENERATIVA REAL
+------------------
+No se coloca una API key dentro del navegador.
+config.js incluye:
+  missionAiEndpoint: ""
+  coachAiEndpoint: ""
+
+Cuando exista backend, coachAiEndpoint recibe POST JSON con:
+- message: pedido del usuario
+- context: hábitos, misiones, entrenamiento, nutrición, G30 y tareas
+- contract.actions: lista de acciones permitidas
+
+La respuesta esperada puede ser:
+{
+  "reply": "Listo, moví el entrenamiento y ajusté el sueño.",
+  "actions": [
+    {"type":"habit.set","habitId":"sleep","patch":{"target":8}},
+    {"type":"training.move_day","from":"lunes","to":"martes"}
+  ]
+}
+
+ACCIONES REMOTAS PERMITIDAS
+---------------------------
+habit.set
+habit.add
+habit.disable
+task.add
+task.remove
+mission.regenerate
+training.set_days
+training.set_minutes
+training.avoid
+training.add_exercise
+training.remove_exercise
+training.move_day
+nutrition.dislike
+nutrition.set_meals
+nutrition.set_style
+
+La IA no escribe código ni modifica localStorage arbitrariamente: sólo devuelve
+acciones estructuradas y el frontend valida/aplica ese conjunto permitido.
+
+ARCHIVOS DEL PARCHE
+-------------------
+g30-coach.js          NUEVO
+missions-v2.js        MODIFICADO
+v20.js                MODIFICADO
+styles.css            MODIFICADO
+config.js             MODIFICADO
+combate.html          MODIFICADO (chat también disponible en Arena)
+sw.js                 MODIFICADO
+
+CACHE PWA
+---------
+vida-rpg-v32
+
+También se corrigió la estrategia offline del service worker: index.html sólo
+se usa como fallback para navegación, no para peticiones de JS/CSS/assets.

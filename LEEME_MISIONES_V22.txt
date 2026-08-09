@@ -1,0 +1,68 @@
+VIDA RPG · G30 · MISIONES V22
+==============================
+
+PARCHE MÍNIMO
+Reemplazar/agregar solamente:
+- missions-v2.js   (NUEVO)
+- v20.js
+- styles.css
+- arena-v2.js
+- sw.js
+
+No hace falta volver a subir todos los HTML.
+
+QUÉ CAMBIA
+1) MISIONES DIARIAS
+- Siguen siendo 3, pero ahora se generan con contexto real.
+- El motor cruza: evaluación, tipo de trabajo/estudio, rol, responsabilidad, cuello de botella, objetivo, skills débiles, focos G30, tareas recientes, pendientes de ayer, entrenamiento del día, nutrición y cumplimiento reciente.
+- Si una misión no aplica, “No aplica · cambiar” genera otra alternativa.
+- “Recalibrar hoy” reemplaza sólo las no completadas.
+- Las ya completadas nunca se pierden al recalibrar.
+
+2) MISIONES SEMANALES
+- 3 objetivos automáticos.
+- Presencia semanal.
+- Cantidad de misiones del Sistema.
+- Un objetivo contextual: liderazgo, estudio, actividad física/manual, finanzas, entrenamiento o tareas personales según el usuario.
+- El progreso se calcula solo desde acciones reales.
+
+3) MISIONES MENSUALES / CICLO G30
+- Constancia de días activos.
+- Cantidad acumulada de misiones.
+- Evidencia en una habilidad débil real.
+- Si existe un G30 activo, el ciclo se alinea con sus 30 días.
+
+4) CAMINO DE RECOMPENSAS
+Cada misión diaria completada + cada tarea personal completada = 1 marca.
+Hitos: 3, 8, 15, 25, 40, 60 y 80 marcas.
+Recompensas: monedas, XP y cofres de Arena.
+Los objetivos semanales/mensuales NO duplican puntos: son hitos construidos con las mismas acciones.
+
+5) INTEGRACIÓN CON ARENA
+Los hitos de 25 y 60 marcas pueden entregar un “Cofre del camino”.
+Arena detecta esos cofres y permite abrirlos desde la sección de cofres.
+Puede otorgar una habilidad nueva según nivel/rareza o monedas si no hay habilidad elegible.
+
+6) PERSONALIZACIÓN / IA
+El sistema es funcional sin servidor gracias a un motor adaptativo local.
+No es una lista aleatoria: usa datos reales del usuario.
+
+Para una IA remota real, el navegador NO debe contener una API key.
+Se dejó un hook opcional:
+  window.VIDA_RPG_CONFIG.missionAiEndpoint
+ó
+  window.VIDA_MISSION_AI_ENDPOINT
+
+Ese endpoint debe ser un backend propio que reciba POST JSON y responda:
+{
+  "daily": [
+    {"text":"...","skill":"Liderazgo","why":"...","tag":"management","xp":5},
+    {"text":"...","skill":"Finanzas personales","why":"...","tag":"finance","xp":6},
+    {"text":"...","skill":"Constancia","why":"...","tag":"recovery","xp":7}
+  ]
+}
+
+El frontend valida que sean exactamente 3 misiones. Si el backend falla, conserva automáticamente las misiones locales.
+
+CACHE PWA
+vida-rpg-v31

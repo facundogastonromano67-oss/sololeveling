@@ -7,7 +7,9 @@ window.VIDA_RPG_CONFIG = {
   privacyPolicyUrl: "",
   termsUrl: "",
   coinPurchaseBackendUrl: "",
-  pvpBackendUrl: ""
+  pvpBackendUrl: "",
+  missionAiEndpoint: "",
+  coachAiEndpoint: ""
 };
 
 // Integración futura opcional de anuncios recompensados.

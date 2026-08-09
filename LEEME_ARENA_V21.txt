@@ -1,0 +1,42 @@
+VIDA RPG · ARENA V21
+
+PARCHE MÍNIMO
+Reemplazar/agregar solamente:
+- combate.html
+- arena-v2.js (nuevo)
+- styles.css
+- sw.js
+
+CAMBIOS PRINCIPALES
+- Arena deja de ser quiz de preguntas.
+- Arsenal personal de 28 habilidades.
+- Rarezas: Normal, Rara, Legendaria, Mítica.
+- Cada personaje recibe desbloqueos distintos por nivel usando una semilla propia.
+- Cofres semanales pueden dar habilidades + monedas.
+- El usuario elige entre 5 y 7 habilidades antes del combate.
+- 10 minijuegos de habilidad; se sortean 3 por combate.
+- Cada prueba ganada da +4 potencia efectiva durante el duelo.
+- Combate por rondas: habilidad vs habilidad, sin azar en la resolución del choque.
+- Categorías: Ataque, Defensa, Control, Táctica, con ventajas circulares.
+- Las habilidades tienen cargas limitadas para evitar repetir siempre la más fuerte.
+- PvE contra Sistema funcional.
+- Versus local funcional con elecciones secretas por cambio de dispositivo.
+- PvP remoto NO se finge: requiere backend real.
+- Evento semanal "Copa de Constancia" usa misiones y tareas reales.
+- Cofres a 180, 400 y 650 puntos.
+- Cache PWA: vida-rpg-v30.
+
+PUNTAJE SEMANAL ACTUAL
+- Misión del Sistema completada: +20
+- Tarea personal completada: +10
+- Tarea/plan completada: +6
+- Día con todas las misiones del Sistema: +25
+- Día activo: +15
+- Bono por racha: +8 por día consecutivo adicional
+
+VALIDACIONES
+- arena-v2.js: node --check OK
+- sw.js: node --check OK
+- 10 minijuegos definidos
+- 28 habilidades definidas
+- combate.html ya no carga v14 ni la cadena de versiones viejas

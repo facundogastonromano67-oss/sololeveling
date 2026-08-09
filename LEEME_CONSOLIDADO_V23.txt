@@ -1,0 +1,23 @@
+VIDA RPG · G30 — CONSOLIDADO V23
+==================================
+
+Este paquete consolida, en orden, las últimas cinco tandas:
+1. V20 — Vistas reorganizadas
+2. V20 — Hotfix Tienda
+3. V21 — Arena: arsenal, rarezas, cofres y 10 minijuegos
+4. V22 — Misiones diarias/semanales/mensuales + Camino de Recompensas
+5. V23 — Hábitos G30 progresivos + Asistente del Sistema + hook de IA
+
+Incluye además todos los archivos base heredados por V20, por lo que este ZIP puede subirse como paquete completo sin aplicar los parches anteriores uno por uno.
+
+Puntos importantes:
+- General / Entrenamiento / Nutrición / Academia / Más reorganizados.
+- Tienda con corrección de carga.
+- Arena V2 aislada mediante arena-v2.js.
+- Motor de misiones personalizadas mediante missions-v2.js.
+- G30 progresivo y chat mediante g30-coach.js.
+- Evaluación estable y liviana: config.js + app.js + v13.js + assessment-stable.js.
+- Paleta sin azul/cian/violeta.
+- Cache PWA consolidado: vida-rpg-v33.
+
+Subir TODO el contenido de este ZIP reemplazando la raíz actual del repositorio.

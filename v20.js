@@ -49,6 +49,7 @@ function g30Meta(){
  return{day:d,stage,pct:Math.round(d/30*100),ready:!!p.questionnaireComplete||!!state.assessmentComplete};
 }
 function dailyMissions(){
+ if(window.VIDA_MISSIONS_V2?.ensureDaily)return window.VIDA_MISSIONS_V2.ensureDaily();
  state.missions=state.missions||{daily:{},weekly:{},chests:{}};state.missions.daily=state.missions.daily||{};
  let d=state.missions.daily[today()];
  if(d?.items?.length)return d;
@@ -74,6 +75,7 @@ function dailyMissions(){
  state.missions.daily[today()]=d;save();return d;
 }
 function toggleMission(id,done){
+ if(window.VIDA_MISSIONS_V2?.toggleDaily)return window.VIDA_MISSIONS_V2.toggleDaily(id,done);
  const daily=dailyMissions(),m=daily.items.find(x=>x.id===id);if(!m||m.done===done)return;
  m.done=done;m.doneAt=done?new Date().toISOString():null;
  const d=typeof getDay==='function'?getDay():(state.days[today()]||(state.days[today()]={tasks:[],events:[],checkin:{}}));d.events=d.events||[];
@@ -90,9 +92,9 @@ function renderGeneral(){
  if(pg!=='home')return;
  const root=ensureRoot('generalV20');if(!root)return;
  [...Q('main').children].forEach(el=>{if(el!==root&&!el.matches('.overlay,#briefingOverlay,#levelUpOverlay'))el.classList.add('v20-legacy')});
- const x=xpData(),a=attrs(),gl=generalSkill(),g=g30Meta(),daily=dailyMissions();
+ const x=xpData(),a=attrs(),gl=generalSkill(),g=g30Meta(),daily=dailyMissions(),missionSummary=window.VIDA_MISSIONS_V2?.summary?.();
  const day=typeof getDay==='function'?getDay():(state.days[today()]||{tasks:[]});const tasks=(day.tasks||[]).filter(t=>!t.source||t.source!=='system');
- const td=todayTraining(),nd=todayDiet();const doneM=daily.items.filter(m=>m.done).length,doneT=tasks.filter(t=>t.done).length;
+ const td=todayTraining(),nd=todayDiet();const doneM=daily.items.filter(m=>m.done).length,doneT=tasks.filter(t=>t.done).length,habitSummary=window.VIDA_G30_V3?.habitsSummary?.();
  const avatar=state.avatar?`<img src="${state.avatar}" alt="Avatar">`:`<span>${esc((state.player?.name||'G').slice(0,1).toUpperCase())}</span>`;
  root.innerHTML=`
  <section class="v20-general-head card">
@@ -103,17 +105,19 @@ function renderGeneral(){
   <div class="v20-g30-compact"><div><span>PLAN G30 · ${esc(g.stage)}</span><strong>Día ${g.day} de 30</strong></div><b>${g.pct}%</b><div class="v20-progress"><i style="width:${g.pct}%"></i></div></div>
  </section>
  <section class="v20-attributes">${Object.entries(a).map(([k,v])=>`<article><span>${ATTR_ICONS[k]||'◆'} ${esc(k)}</span><strong>${Math.round(v)}</strong><i><b style="width:${Math.max(0,Math.min(100,v))}%"></b></i></article>`).join('')}</section>
- <section class="v20-today-head"><div><div class="eyebrow">GENERAL · HOY</div><h2>Qué tenés que hacer</h2></div><p>${doneM}/${daily.items.length} misiones · ${doneT}/${tasks.length} tareas</p></section>
+ <section class="v20-today-head"><div><div class="eyebrow">GENERAL · HOY</div><h2>Qué tenés que hacer</h2></div><p>${doneM}/${daily.items.length} prioridades · ${habitSummary?`${habitSummary.done}/${habitSummary.total} hábitos · `:''}${doneT}/${tasks.length} tareas</p></section>
+ ${window.VIDA_G30_V3?.habitBlockHtml?.()||''}
  <section class="v20-action-grid">
   <article class="v20-action-card"><header><div><span>SISTEMA</span><h3>Misiones asignadas</h3></div><b>${doneM}/${daily.items.length}</b></header><div class="v20-action-list">${daily.items.map(m=>`<label class="v20-check ${m.done?'done':''}"><input type="checkbox" data-v20-mission="${esc(m.id)}" ${m.done?'checked':''}><div><strong>${esc(m.text)}</strong><small>${esc(m.skill||'Desarrollo')} · +${m.xp||0} XP</small></div></label>`).join('')}</div></article>
   <article class="v20-action-card"><header><div><span>VIDA REAL</span><h3>Tareas del día</h3></div><b>${doneT}/${tasks.length}</b></header><div class="v20-action-list">${tasks.length?tasks.map(t=>`<label class="v20-check ${t.done?'done':''}"><input type="checkbox" data-v20-task="${esc(t.id)}" ${t.done?'checked':''}><div><strong>${esc(t.text)}</strong><small>${esc(t.category||'Personal')} · +${t.xp||0} XP</small></div></label>`).join(''):'<div class="v20-empty-small">No cargaste tareas personales para hoy.</div>'}</div><div class="v20-add-task"><input id="v20TaskText" placeholder="Agregar una tarea para hoy"><button id="v20AddTask" class="ghost">Agregar</button></div></article>
  </section>
+ ${missionSummary?`<a href="misiones.html" class="m22-general-overview"><div><span>RECORRIDO DEL SISTEMA</span><strong>Semana ${missionSummary.weekly.done}/${missionSummary.weekly.total} · Ciclo ${missionSummary.monthly.done}/${missionSummary.monthly.total}</strong></div><div><b>${missionSummary.reward.points}</b><small>marcas de recompensa</small></div><em>Ver misiones →</em></a>`:''}
  <section class="v20-context-grid">
   <a href="entrenamiento.html" class="v20-context-card"><span>ENTRENAMIENTO</span>${td?`<h3>${esc(td.focus)}</h3><p>${td.exercises.length} ejercicios · ${state.trainingPlan?.profile?.minutes||60} min</p><b>Registrar sesión →</b>`:`<h3>Recuperación / día libre</h3><p>No hay sesión estructurada para hoy.</p><b>Ver semana →</b>`}</a>
   <a href="nutricion.html" class="v20-context-card"><span>NUTRICIÓN</span>${nd?`<h3>${nd.meals.length} comidas planificadas</h3><p>${nd.totals?.kcal||'—'} kcal · P ${nd.totals?.p||'—'} g</p><b>Ver comidas y recetas →</b>`:`<h3>Plan pendiente</h3><p>Configurá tu alimentación para ver qué toca hoy.</p><b>Abrir Nutrición →</b>`}</a>
  </section>`;
- root.onchange=e=>{const mid=e.target.dataset.v20Mission,tid=e.target.dataset.v20Task;if(mid){toggleMission(mid,e.target.checked);renderGeneral();return}if(tid){const t=(typeof getDay==='function'?getDay():day).tasks.find(x=>x.id===tid);if(t){t.done=e.target.checked;save();renderGeneral()}}};
- Q('#v20AddTask')?.addEventListener('click',()=>{const input=Q('#v20TaskText'),text=input?.value.trim();if(!text)return;const d=typeof getDay==='function'?getDay():day;d.tasks=d.tasks||[];d.tasks.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),text,category:'Personal',skill:'Organización',xp:1,done:false,custom:true});save();renderGeneral()});
+ root.onchange=e=>{const mid=e.target.dataset.v20Mission,tid=e.target.dataset.v20Task;if(mid){toggleMission(mid,e.target.checked);renderGeneral();return}if(tid){const t=(typeof getDay==='function'?getDay():day).tasks.find(x=>x.id===tid);if(t){t.done=e.target.checked;save();window.VIDA_MISSIONS_V2?.sync?.();renderGeneral()}}};
+ Q('#v20AddTask')?.addEventListener('click',()=>{const input=Q('#v20TaskText'),text=input?.value.trim();if(!text)return;const d=typeof getDay==='function'?getDay():day;d.tasks=d.tasks||[];d.tasks.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),text,category:'Personal',skill:'Organización',xp:1,done:false,custom:true});save();window.VIDA_MISSIONS_V2?.sync?.();renderGeneral()});
 }
 
 function weekDateFor(day){const n=new Date(),delta=day-n.getDay(),d=new Date(n);d.setDate(n.getDate()+delta);return dateKeySafe(d)}
@@ -208,10 +212,12 @@ function cleanupAfterLegacy(){
  if(isNutrition)QA('#nutritionDailyV19,.diet-hero,.diet-library-note,#dietResults,#dietTracker').forEach(x=>x.classList.add('v20-nutrition-legacy'));
  if(pg==='more')QA('.more-hero,.more-grid').forEach(x=>x.classList.add('v20-more-legacy'));
 }
-function init(){cleanupAfterLegacy();renderGeneral();renderTraining();renderNutrition();renderAcademy();renderMore()}
+function loadG30CoachV3(){if(window.VIDA_G30_V3){window.VIDA_G30_V3.mount?.();return}if(window.__vidaG30CoachLoading)return;window.__vidaG30CoachLoading=true;const s=document.createElement('script');s.src='g30-coach.js';s.onload=()=>{window.__vidaG30CoachLoading=false;window.VIDA_G30_V3?.mount?.();renderGeneral()};s.onerror=()=>{window.__vidaG30CoachLoading=false;console.warn('No se pudo cargar g30-coach.js')};document.head.appendChild(s)}
+function init(){cleanupAfterLegacy();renderGeneral();renderTraining();renderNutrition();renderAcademy();renderMore();loadG30CoachV3()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 setTimeout(init,420);setTimeout(init,900);
 // Si se guarda/edita una rutina con los controles heredados, refrescamos la vista limpia.
 document.addEventListener('click',e=>{if(pg==='training'&&['saveTrainingEdit','deleteTrainingEdit','avoidTrainingEdit'].includes(e.target?.id))setTimeout(renderTraining,120);if(isNutrition&&e.target?.closest?.('#regenerateDietBtn,#dietForm button[type="submit"],#saveG30Meal,#dislikeG30Meal'))setTimeout(renderNutrition,140)});
 document.addEventListener('submit',e=>{if(pg==='training'&&e.target?.id==='trainingForm')setTimeout(renderTraining,140);if(isNutrition&&e.target?.id==='dietForm')setTimeout(renderNutrition,140)});
+window.addEventListener('vida:g30-update',()=>{renderGeneral();if(pg==='training')renderTraining();if(isNutrition)renderNutrition()});
 })();
