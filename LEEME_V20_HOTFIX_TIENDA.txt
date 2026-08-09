@@ -1,0 +1,11 @@
+VIDA RPG G30 · V20 HOTFIX TIENDA
+
+Problema confirmado:
+V11 observaba #headerCoins y V14 volvía a escribir ese mismo nodo. En Tienda eso generaba un ciclo de MutationObserver y la pantalla no terminaba de cargar.
+
+Correcciones:
+- eliminado el MutationObserver circular de Tienda en v11.js
+- g30CoinSync sólo modifica el DOM si el saldo realmente cambió
+- corregido helper mondayKey faltante en v6.js
+- se conserva sincronización de monedas después de compras/desbloqueos
+- caché PWA: vida-rpg-v29
