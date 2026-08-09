@@ -1,0 +1,17 @@
+V24 · Entrenamiento guiado
+Reemplazar solamente:
+- v20.js
+- styles.css
+- sw.js
+
+Cambios:
+- Un ejercicio abierto por vez; los demás quedan compactos.
+- Tipografía más grande para Serie, Kg, Reps, RPE, Entrenador y textos auxiliares.
+- Inputs más compactos.
+- Columna de referencia anterior.
+- Check para completar cada serie.
+- Progreso de ejercicios/series y porcentaje.
+- Temporizador de descanso de 2:30.
+- Autoavance al siguiente ejercicio al completar todas las series.
+- Finalizar entrenamiento guarda la sesión.
+- Caché PWA vida-rpg-v34.
