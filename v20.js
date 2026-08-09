@@ -150,7 +150,7 @@ function exerciseCard(ex,log,date,weekday,idx,activeIdx){
  return `<article class="v20-exercise v20-exercise-active"><header><div><span>EJERCICIO ${idx+1} · EN CURSO</span><h3>${esc(ex.name)}</h3><p>${esc(ex.prescription)}${ex.muscle?` · ${esc(ex.muscle)}`:''}</p></div><button class="v20-icon-action" data-v20-edit="${weekday}:${esc(ex.id)}" title="Opciones del ejercicio">⋯</button></header>
  <div class="v20-coach-tip"><b>ENTRENADOR</b><p>${esc(coachAdvice(ex,prev))}</p>${last?`<small>Anterior: ${last.w||'—'} kg × ${last.r||'—'} reps</small>`:''}</div>
  <div class="v20-set-table"><div class="v20-set-row head"><span>Serie</span><span>Anterior</span><span>Kg</span><span>Reps</span><span>RPE</span><span>Hecha</span></div>${saved.sets.map((s,i)=>{const ps=prev?.sets?.[i]||{};return `<div class="v20-set-row ${s.done?'set-done':''}"><b>${i+1}</b><span class="v20-prev-set">${ps.weight||ps.reps?`${ps.weight||'—'} × ${ps.reps||'—'}`:'—'}</span><input type="number" inputmode="decimal" min="0" step="0.5" data-v20-ex="${esc(ex.id)}" data-set="${i}" data-field="weight" value="${esc(s.weight)}" placeholder="kg"><input type="number" inputmode="numeric" min="0" step="1" data-v20-ex="${esc(ex.id)}" data-set="${i}" data-field="reps" value="${esc(s.reps)}" placeholder="reps"><input type="number" inputmode="decimal" min="1" max="10" step="0.5" data-v20-ex="${esc(ex.id)}" data-set="${i}" data-field="rpe" value="${esc(s.rpe)}" placeholder="RPE"><button class="v20-set-check ${s.done?'done':''}" data-v20-set-done="${esc(ex.id)}:${i}" title="Completar serie">${s.done?'✓':'○'}</button></div>`}).join('')}</div>
- <div class="v20-ex-actions"><button class="v20-add-set" data-v20-add-set="${esc(ex.id)}">+ Agregar serie</button><button class="v20-rest-btn" data-v20-rest="150">Descanso entre series · 2:30</button></div></article>`;
+ <div class="v20-ex-actions"><button class="v20-add-set" data-v20-add-set="${esc(ex.id)}">+ Agregar serie</button><button class="v20-rest-btn" data-v20-rest="150">Iniciar descanso entre series · 2:30</button></div></article>`;
 }
 function saveTraining(day,date){
  if(!day)return;persistTrainingInputs(day,date);const log=state.trainingDetailedLogs[date];log.savedAt=new Date().toISOString();save();try{toast('Entrenamiento finalizado y guardado.','good')}catch(e){};renderTraining();
@@ -172,7 +172,7 @@ function renderTraining(){
   const open=e.target.closest('[data-v20-open-ex]');if(open){persistTrainingInputs(day,date);sessionStorage.setItem('v20ActiveExercise',open.dataset.v20OpenEx);renderTraining();return}
   const done=e.target.closest('[data-v20-set-done]');if(done){persistTrainingInputs(day,date);const [id,si]=done.dataset.v20SetDone.split(':');const ex=day?.exercises.find(x=>x.id===id);if(!ex)return;const x=log.exercises[id]||(log.exercises[id]={name:ex.name,sets:defaultSets(ex)});x.sets[+si]=x.sets[+si]||{};x.sets[+si].done=!x.sets[+si].done;save();if(x.sets.every(s=>s.done)){const ni=Math.min(day.exercises.length-1,day.exercises.findIndex(z=>z.id===id)+1);sessionStorage.setItem('v20ActiveExercise',String(ni))}renderTraining();return}
   const add=e.target.closest('[data-v20-add-set]');if(add){persistTrainingInputs(day,date);const ex=day?.exercises.find(x=>x.id===add.dataset.v20AddSet);if(!ex)return;const x=log.exercises[ex.id]||(log.exercises[ex.id]={name:ex.name,sets:defaultSets(ex)});x.sets.push({reps:'',weight:'',rpe:'',done:false});save();renderTraining();return}
-  const rest=e.target.closest('[data-v20-rest]');if(rest){let left=Number(rest.dataset.v20Rest)||150;if(window.__v20RestTimer)clearInterval(window.__v20RestTimer);rest.disabled=true;const draw=()=>{const m=Math.floor(left/60),s=String(left%60).padStart(2,'0');rest.textContent=`Descanso entre series · ${m}:${s}`};draw();window.__v20RestTimer=setInterval(()=>{left--;draw();if(left<=0){clearInterval(window.__v20RestTimer);window.__v20RestTimer=null;rest.disabled=false;rest.textContent='Descanso terminado ✓ · Seguí con la próxima serie';try{toast('Descanso terminado. Próxima serie.','good')}catch(e){}}},1000);return}
+  const rest=e.target.closest('[data-v20-rest]');if(rest){let left=Number(rest.dataset.v20Rest)||150;if(window.__v20RestTimer)clearInterval(window.__v20RestTimer);rest.disabled=true;const draw=()=>{const m=Math.floor(left/60),s=String(left%60).padStart(2,'0');rest.textContent=`Descanso activo · ${m}:${s}`};draw();window.__v20RestTimer=setInterval(()=>{left--;draw();if(left<=0){clearInterval(window.__v20RestTimer);window.__v20RestTimer=null;rest.disabled=false;rest.textContent='Descanso terminado ✓ · Seguí con la próxima serie';try{toast('Descanso terminado. Próxima serie.','good')}catch(e){}}},1000);return}
   const edit=e.target.closest('[data-v20-edit]');if(edit){persistTrainingInputs(day,date);const legacy=Q(`[data-edit-training="${CSS.escape(edit.dataset.v20Edit)}"]`);legacy?.click();return}
  };
  root.onchange=e=>{if(e.target.matches?.('[data-v20-ex]'))persistTrainingInputs(day,date)};
@@ -241,4 +241,124 @@ setTimeout(init,420);setTimeout(init,900);
 document.addEventListener('click',e=>{if(pg==='training'&&['saveTrainingEdit','deleteTrainingEdit','avoidTrainingEdit'].includes(e.target?.id))setTimeout(renderTraining,120);if(isNutrition&&e.target?.closest?.('#regenerateDietBtn,#dietForm button[type="submit"],#saveG30Meal,#dislikeG30Meal'))setTimeout(renderNutrition,140)});
 document.addEventListener('submit',e=>{if(pg==='training'&&e.target?.id==='trainingForm')setTimeout(renderTraining,140);if(isNutrition&&e.target?.id==='dietForm')setTimeout(renderNutrition,140)});
 window.addEventListener('vida:g30-update',()=>{renderGeneral();if(pg==='training')renderTraining();if(isNutrition)renderNutrition()});
+})();
+
+
+
+/* V28 · Enriquecimiento visual de entrenamiento */
+(function(){
+  const EX_META = [
+    {keys:['prensa','sentadilla'], title:'Fuerza de piernas', desc:'Empujá con control, mantené el torso estable y enfocá la fuerza en cuádriceps y glúteos.'},
+    {keys:['zancadas'], title:'Estabilidad y potencia', desc:'Paso firme, rodilla alineada y controlá la bajada para activar piernas y equilibrio.'},
+    {keys:['press de pecho','pecho'], title:'Empuje de torso', desc:'Bajá con control, pecho abierto y empujá fuerte sin perder técnica.'},
+    {keys:['jalón','dominada','tirón al pecho'], title:'Tirón de espalda', desc:'Llevá los codos hacia abajo, pecho arriba y sentí el trabajo en la espalda.'},
+    {keys:['peso muerto'], title:'Cadena posterior', desc:'Bisagra de cadera, espalda neutra y tensión constante en glúteos e isquios.'},
+    {keys:['press de hombros','hombro'], title:'Empuje vertical', desc:'Apretá abdomen y glúteos para empujar con estabilidad y control.'},
+    {keys:['plancha'], title:'Core y estabilidad', desc:'Mantené el cuerpo alineado y la tensión constante sin colapsar la cintura.'},
+    {keys:['remo'], title:'Espalda media', desc:'Llevá el codo hacia atrás y mantené el pecho abierto durante todo el recorrido.'},
+    {keys:['curl','bícep','bicep'], title:'Brazo - flexión', desc:'No balancees el cuerpo: subí con control y apretá fuerte arriba.'},
+    {keys:['tricep','trícep','fondos'], title:'Brazo - empuje', desc:'Fijá los codos y extendé con control para aislar mejor el trabajo.'}
+  ];
+
+  function pickMeta(name){
+    const n = (name||'').toLowerCase();
+    for(const item of EX_META){
+      if(item.keys.some(k=>n.includes(k))) return item;
+    }
+    return {title:'Ejecución técnica', desc:'Movete con control, cuidá la técnica y buscá progresar una repetición más o un poco más de carga.'};
+  }
+
+  function svgData(name){
+    const meta = pickMeta(name);
+    const label = encodeURIComponent((name||'Ejercicio').slice(0,26));
+    const sub = encodeURIComponent(meta.title);
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2a1a0f"/>
+            <stop offset="55%" stop-color="#0f0b08"/>
+            <stop offset="100%" stop-color="#17110b"/>
+          </linearGradient>
+          <radialGradient id="glow" cx="20%" cy="20%" r="80%">
+            <stop offset="0%" stop-color="#E2B04C" stop-opacity="0.34"/>
+            <stop offset="100%" stop-color="#E2B04C" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect rx="22" ry="22" width="420" height="220" fill="url(#g)"/>
+        <rect rx="22" ry="22" width="420" height="220" fill="url(#glow)"/>
+        <g opacity="0.16">
+          <circle cx="333" cy="65" r="58" fill="#E2B04C"/>
+          <circle cx="108" cy="155" r="78" fill="#8B5E2C"/>
+        </g>
+        <g stroke="#E2B04C" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85">
+          <path d="M113 151c18-28 43-45 74-51 23-4 52-1 79 10"/>
+          <path d="M161 86c-11 9-19 22-24 37"/>
+          <path d="M250 95c12 9 22 22 29 39"/>
+          <path d="M191 86l25-19 25 19"/>
+          <path d="M216 68v74"/>
+          <path d="M168 144l48 22 49-22"/>
+          <path d="M136 171h162"/>
+        </g>
+        <text x="22" y="32" fill="#F4E2BE" font-family="Inter,Arial,sans-serif" font-weight="700" font-size="18">${sub}</text>
+        <text x="22" y="194" fill="#FFFFFF" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="28">${label}</text>
+      </svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  function enhanceTrainingCards(){
+    if(document.body?.dataset?.page !== 'training') return;
+    const cards = document.querySelectorAll('.v20-ex-card');
+    cards.forEach(card=>{
+      if(card.dataset.enhancedV28 === '1') return;
+      card.dataset.enhancedV28 = '1';
+
+      const titleEl = card.querySelector('h3, .v20-ex-title');
+      const exName = titleEl ? titleEl.textContent.trim() : 'Ejercicio';
+      const meta = pickMeta(exName);
+
+      // Insert hero row
+      const mentor = card.querySelector('.v20-mentor-row, .v20-trainer-row, .v20-mentor');
+      const hero = document.createElement('div');
+      hero.className = 'v28-ex-hero';
+      hero.innerHTML = `
+        <img class="v28-ex-image" alt="${exName}" src="${svgData(exName)}"/>
+        <div class="v28-ex-copy">
+          <div class="v28-ex-badge">${meta.title}</div>
+          <p class="v28-ex-desc">${meta.desc}</p>
+          <p class="v28-ex-motivation">Clave del día: técnica limpia, intención alta y una serie a la vez.</p>
+        </div>
+      `;
+      if(mentor && mentor.parentNode){
+        mentor.parentNode.insertBefore(hero, mentor);
+      }else{
+        card.appendChild(hero);
+      }
+
+      // Rest button wording & position row
+      const actions = card.querySelector('.v20-ex-actions');
+      const restBtn = actions?.querySelector('.v20-rest-btn');
+      if(restBtn){
+        const txt = restBtn.textContent || '';
+        if(!txt.toLowerCase().includes('iniciar')){
+          restBtn.textContent = txt.replace(/^Descanso/i,'Iniciar descanso entre series');
+          if(restBtn.textContent === txt) restBtn.textContent = 'Iniciar descanso entre series · 2:30';
+        }
+        restBtn.classList.add('v28-rest-wide');
+      }
+    });
+  }
+
+  const run = () => enhanceTrainingCards();
+  document.addEventListener('DOMContentLoaded', run);
+  const oldLoadTraining = window.loadTrainingPage;
+  if(typeof oldLoadTraining === 'function'){
+    window.loadTrainingPage = function(){
+      const r = oldLoadTraining.apply(this, arguments);
+      setTimeout(enhanceTrainingCards, 60);
+      setTimeout(enhanceTrainingCards, 250);
+      return r;
+    }
+  }
+  setTimeout(enhanceTrainingCards, 300);
 })();

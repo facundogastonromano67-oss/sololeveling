@@ -1,0 +1,15 @@
+V28 · Entrenamiento con imágenes + relleno visual
+
+Reemplazar:
+- v20.js
+- styles.css
+- sw.js
+
+Cambios:
+1) Cada ejercicio muestra una imagen/hero visual generada en alta calidad estilo tarjeta.
+2) Se agrega bloque descriptivo con enfoque técnico + mensaje motivacional.
+3) El botón pasa a:
+   "Iniciar descanso entre series · 2:30"
+   y queda ancho, alineado con el bloque de anotadores.
+4) Texto de ayuda debajo del botón.
+5) Caché PWA: vida-rpg-v38

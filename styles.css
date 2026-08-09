@@ -918,3 +918,98 @@ body[data-page="training"] .v20-set-check{
     height:34px !important;
   }
 }
+
+
+/* V28 · Visuales y relleno de espacio en entrenamiento */
+body[data-page="training"] .v28-ex-hero{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap:18px;
+  align-items:stretch;
+  margin:14px 0 12px;
+}
+body[data-page="training"] .v28-ex-image{
+  width:100%;
+  max-width:280px;
+  height:158px;
+  object-fit:cover;
+  border-radius:16px;
+  border:1px solid rgba(226,176,76,.26);
+  box-shadow:0 10px 30px rgba(0,0,0,.28);
+  background:#120d09;
+}
+body[data-page="training"] .v28-ex-copy{
+  min-height:158px;
+  border:1px solid rgba(226,176,76,.18);
+  border-radius:16px;
+  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  padding:16px 18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+body[data-page="training"] .v28-ex-badge{
+  display:inline-block;
+  width:max-content;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#E2B04C;
+  background:rgba(226,176,76,.08);
+  border:1px solid rgba(226,176,76,.22);
+  border-radius:999px;
+  padding:6px 10px;
+  margin-bottom:10px;
+}
+body[data-page="training"] .v28-ex-desc{
+  margin:0;
+  font-size:15px;
+  line-height:1.5;
+  color:#E9D7B8;
+}
+body[data-page="training"] .v28-ex-motivation{
+  margin:10px 0 0;
+  font-size:13px;
+  line-height:1.45;
+  color:#C8B391;
+}
+body[data-page="training"] .v20-ex-actions{
+  width:628px !important;
+  max-width:628px !important;
+  justify-content:flex-start !important;
+}
+body[data-page="training"] .v20-rest-btn.v28-rest-wide{
+  width:628px !important;
+  max-width:628px !important;
+  min-height:48px;
+  white-space:normal;
+  text-align:left;
+  font-size:18px;
+  font-weight:800;
+  line-height:1.25;
+  padding:12px 16px;
+}
+body[data-page="training"] .v20-rest-btn.v28-rest-wide::after{
+  content:"Usalo al terminar una serie para recuperar antes de la próxima.";
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+  font-weight:600;
+  color:#BCA27E;
+}
+@media(max-width:760px){
+  body[data-page="training"] .v28-ex-hero{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  body[data-page="training"] .v28-ex-image{
+    max-width:none;
+    height:180px;
+  }
+  body[data-page="training"] .v20-rest-btn.v28-rest-wide{
+    width:100% !important;
+    max-width:none !important;
+    font-size:15px;
+  }
+}
