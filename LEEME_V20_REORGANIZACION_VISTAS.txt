@@ -1,0 +1,53 @@
+VIDA RPG · G30 — V20 REORGANIZACIÓN DE VISTAS
+
+Objetivo de esta versión:
+priorizar lo que el usuario viene a HACER en cada pantalla y eliminar duplicaciones, espacios muertos y jerarquías incómodas.
+
+NAVEGACIÓN
+- Desktop: sólo barra superior.
+- Mobile: sólo barra inferior.
+- Nombres unificados: General · Entrenamiento · Nutrición · Academia · Más.
+
+GENERAL
+- Resumen compacto del Gladiador: nivel RPG, XP, racha, XP del día.
+- Plan G30 compacto: día, etapa y progreso.
+- Los 4 atributos visibles y compactos.
+- Misiones del Sistema y tareas personales como centro de la pantalla.
+- Tareas personales se agregan sin salir de General.
+- Tarjetas compactas para entrenamiento y nutrición de hoy.
+- Se retiraron Logros, módulos secundarios y duplicaciones del flujo diario.
+
+ENTRENAMIENTO
+- Selector Lun–Dom arriba.
+- La sesión elegida muestra foco, duración, ejercicios y fecha.
+- Cada ejercicio tiene cuaderno por serie: kg, reps y RPE.
+- El entrenador compara con la sesión previa y propone una progresión pequeña.
+- Agregar/quitar series.
+- Editar ejercicio queda como acción secundaria (...) y reutiliza el editor existente.
+- Guardar sesión persiste los datos para Progreso.
+- Configuración de rutina queda secundaria y se abre con “Editar rutina”.
+
+NUTRICIÓN
+- La pantalla abre directamente en “Qué comés hoy”.
+- Selector Lun–Dom arriba.
+- Macros diarios compactos.
+- Cada comida muestra imagen, nombre, macros y acción Cambiar.
+- Receta paso a paso dentro de la misma comida.
+- Configuración/calibración pasa a segundo plano con “Editar plan”.
+
+ACADEMIA
+- Hero gigante eliminado.
+- Recetario eliminado de Academia (pertenece a Nutrición).
+- Academia queda dedicada a rutas, lecciones, quizzes y certificaciones.
+- Cabecera compacta con progreso de lecciones.
+
+MÁS
+- Lista vertical compacta.
+- Un solo icono por módulo.
+- Nombre + descripción + chevron alineados.
+- Sin cards gigantes ni espacios vacíos.
+
+COMPATIBILIDAD
+- Se conservan el estado, evaluación, Plan G30, entrenamiento, dieta, academia, Arena, Perfil y demás módulos existentes.
+- V20 se monta como capa de interfaz sobre los datos actuales para evitar migraciones destructivas.
+- Cache PWA: vida-rpg-v28.
