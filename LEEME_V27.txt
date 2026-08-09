@@ -1,0 +1,21 @@
+V27 · Anotadores compactos SOLO en computadora
+
+Reemplazar:
+- entrenamiento.html
+- v20.js
+- sw.js
+
+Desktop (>760px):
+- Kg: 150 px
+- Reps: 130 px
+- RPE: 110 px
+- Bloque completo de series: ~628 px
+- Ya no se estira a todo el ancho del ejercicio.
+
+Móvil:
+- No se modifica el diseño actual.
+
+Además:
+- entrenamiento.html fuerza styles.css?v=37 y v20.js?v=37 para evitar archivos viejos.
+- Texto: "Descanso entre series · 2:30".
+- Caché: vida-rpg-v37.
