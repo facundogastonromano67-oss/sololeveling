@@ -121,7 +121,9 @@
       else main.prepend(section);
     }else{
       const firstCard = main.querySelector('.card');
-      if(firstCard) main.insertBefore(section, firstCard);
+      let anchor = firstCard;
+      while(anchor && anchor.parentElement !== main) anchor = anchor.parentElement;
+      if(anchor) main.insertBefore(section, anchor);
       else main.prepend(section);
     }
   }

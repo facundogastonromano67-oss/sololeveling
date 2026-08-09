@@ -1,0 +1,11 @@
+{
+  "name": "vida-rpg",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:syntax": "node --check app.js && node --check v6.js && node --check v7.js && node --check v8.js && node --check v9.js && node --check v10.js && node --check v11.js && node --check v12.js && node --check v13.js && node --check v14.js && node --check v15.js && node --check v16.js && node --check v17.js && node --check v18.js && node --check v19.js && node --check v20.js && node --check sw.js"
+  },
+  "devDependencies": {
+    "jsdom": "29.1.1"
+  }
+}
