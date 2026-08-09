@@ -1,0 +1,13 @@
+V25 · Entrenamiento compacto
+Reemplazar solamente:
+- v20.js
+- styles.css
+- sw.js
+
+Cambios:
+- Inputs Kg/Reps/RPE más cortos y compactos.
+- Tabla de series deja de estirarse innecesariamente.
+- Botón: "Descanso entre series · 2:30".
+- Texto explicativo: "Recuperación recomendada antes de la próxima serie".
+- Al terminar: "Descanso terminado ✓ · Seguí con la próxima serie".
+- Caché PWA: vida-rpg-v35.

@@ -783,3 +783,57 @@ body[data-page="training"] .v20-page-intro p{font-size:14px!important;line-heigh
 .v20-exercise-collapsed{cursor:pointer;padding:10px 14px}.v20-exercise-collapsed:hover{border-color:rgba(212,175,55,.3)}.v20-exercise-collapsed.done{background:#12120D}.v20-ex-mini{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.v20-ex-mini h3{font-size:17px}.v20-ex-mini p{margin:0}.v20-mini-status{display:flex;align-items:center;gap:7px}.v20-mini-status>b{font-size:15px;color:#F2D27A}.v20-mini-status small{font-size:11px;color:#9E8E77}.v20-mini-status button{border:1px solid rgba(212,175,55,.16);background:#18130F;color:#EAD6A1;border-radius:9px;padding:6px 9px;font-size:11px;font-weight:800}
 .v20-session-end label{font-size:13px!important}.v20-session-end textarea{font-size:14px}.v20-session-end .primary{font-size:12px;font-weight:900;letter-spacing:.04em}
 @media(max-width:760px){.v20-session-bar{grid-template-columns:1fr}.v20-session-progress{flex-wrap:wrap}.v20-set-row{grid-template-columns:30px 62px repeat(3,minmax(54px,1fr)) 42px;gap:4px}.v20-set-row.head{font-size:10px!important}.v20-prev-set{font-size:10px}.v20-set-row input{font-size:14px;padding:7px 3px}.v20-coach-tip{display:block}.v20-coach-tip>b{display:block;margin-bottom:4px}.v20-coach-tip small{display:block;margin-top:5px}.v20-ex-mini{grid-template-columns:1fr}.v20-mini-status{justify-content:space-between}.v20-ex-actions{gap:8px;flex-wrap:wrap}}
+
+
+/* V25 · Anotadores más compactos */
+body[data-page="training"] .v20-set-table{
+  max-width:1040px;
+}
+body[data-page="training"] .v20-set-row{
+  grid-template-columns:44px 92px 122px 108px 100px 48px;
+  justify-content:start;
+  column-gap:8px;
+}
+body[data-page="training"] .v20-set-row input{
+  width:100%;
+  max-width:122px;
+  min-width:0;
+}
+body[data-page="training"] .v20-set-row input[data-field="reps"]{
+  max-width:108px;
+}
+body[data-page="training"] .v20-set-row input[data-field="rpe"]{
+  max-width:100px;
+}
+body[data-page="training"] .v20-ex-actions{
+  justify-content:flex-start;
+  gap:12px;
+}
+body[data-page="training"] .v20-rest-btn{
+  position:relative;
+  padding:8px 12px;
+  white-space:normal;
+  line-height:1.25;
+  text-align:left;
+  max-width:220px;
+}
+body[data-page="training"] .v20-rest-btn::after{
+  content:"Recuperación recomendada antes de la próxima serie";
+  display:block;
+  margin-top:2px;
+  font-size:10px;
+  font-weight:600;
+  color:#9E8E77;
+}
+@media(max-width:760px){
+  body[data-page="training"] .v20-set-row{
+    grid-template-columns:30px 58px minmax(58px,78px) minmax(54px,72px) minmax(54px,68px) 40px;
+    column-gap:4px;
+  }
+  body[data-page="training"] .v20-set-row input{
+    max-width:none;
+  }
+  body[data-page="training"] .v20-rest-btn{
+    max-width:100%;
+  }
+}
